@@ -57,27 +57,27 @@ public class JSONPartitionerTest {
 
   @Test
   public void testUnendedString() throws LocatedJSONException {
-    JSON.parse("\"");
+    assertErrorIndex(() -> JSON.parse("\""), 0);
   }
 
   @Test
   public void testUnendedObject() throws LocatedJSONException {
-    JSON.parse("{");
+    assertErrorIndex(() -> JSON.parse("{"), 0);
   }
 
   @Test
   public void testUnendedArray() throws LocatedJSONException {
-    JSON.parse("[");
+    assertErrorIndex(() -> JSON.parse("["), 0);
   }
 
   @Test
   public void testMalformedArray() throws LocatedJSONException {
-    assertErrorIndex(() -> JSON.parse("[1 2]"), -1);
+    assertErrorIndex(() -> JSON.parse("[1 2]"), 3);
   }
 
   @Test
   public void testMalformedObject() throws LocatedJSONException {
-    JSON.parse("{\"a\" \"b\"}");
+    assertErrorIndex(() -> JSON.parse("{\"a\" \"b\"}"), 5);
   }
 
   @Test (expectedExceptions = LocatedJSONException.class)
@@ -146,12 +146,19 @@ public class JSONPartitionerTest {
     assertErrorIndex(() -> JSON.parse(value), failOffset);
   }
 
-  private void assertErrorIndex(ThrowingRunnable<LocatedJSONException> o, int i) {
+  private void assertErrorIndex(ThrowingRunnable<LocatedJSONException> o, int expected) {
     try {
       o.run();
       Assert.fail("Test threw no exception");
     } catch (LocatedJSONException ex) {
-      Assert.assertEquals(ex.getPosition(), i);
+      final int actual = ex.getPosition();
+      if (actual == expected) {
+        return;
+      }
+      final String message = String.format("Exception has wrong index [Expected: %d, Actual: %d]%n%s", expected, actual, ex.getLocalizedMessage());
+      final AssertionError assertionError = new AssertionError(message);
+      assertionError.setStackTrace(ex.getStackTrace());
+      throw assertionError;
     }
   }
 
