@@ -27,7 +27,7 @@ public class Partition {
     this.start = start;
     this.end = end;
     this.name = name.name();
-    this.type = name;
+    type = name;
   }
 
   @Override
@@ -41,14 +41,14 @@ public class Partition {
   }
 
   @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
+  public boolean equals(final Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (!(o instanceof Partition)) {
+    if (!(obj instanceof Partition)) {
       return false;
     }
-    final Partition partition = (Partition) o;
+    final Partition partition = (Partition) obj;
     return start == partition.start &&
         end == partition.end &&
         Objects.equals(name, partition.name);

@@ -11,9 +11,15 @@ import json.utils.Partition;
 /**
  * @author James Tapsell
  */
-public class Example {
+final class HtmlJsonTest {
+
+  public static final String LINE_SEPARATOR = System.lineSeparator();
+
+  private HtmlJsonTest() {
+  }
+
   public static void main(final String... args) throws LocatedJSONException, IOException {
-    final String test = String.join("\n", Files.readAllLines(Paths.get("big.json")));
+    final String test = String.join(LINE_SEPARATOR, Files.readAllLines(Paths.get("big.json")));
     final List<Partition> paa = part(test);
     try (PrintStream ps = new PrintStream(new FileOutputStream("out.html"))) {
       for (final Partition p : paa) {
@@ -51,15 +57,15 @@ public class Example {
 
   private static List<Partition> part(final String test) throws LocatedJSONException {
     final long n = System.nanoTime();
-    final List<Partition> partitions = JSON.parse(test);
+    final List<Partition> partitions = JSON.parseString(test);
     final long x = System.nanoTime() - n;
-    System.err.printf("%d.%dms%n", x % 1000000, x / 10000000);
+    System.err.printf("Parsing took %d.%dms%n", x / 1000000L, x % 10000000L);
     return partitions;
   }
 
   private static String getText(final String test, final Partition p) {
     String substring = test.substring(p.getStart(), p.getEnd());
-    substring = substring.replaceAll("\n", "<br>");
+    substring = substring.replaceAll(LINE_SEPARATOR, "<br>");
     substring = substring.replaceAll(" ", "&nbsp;");
     return substring;
   }

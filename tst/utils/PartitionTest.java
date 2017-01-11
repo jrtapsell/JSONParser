@@ -1,3 +1,5 @@
+package utils;
+
 import json.utils.ContentType;
 import json.utils.Partition;
 import org.testng.Assert;
@@ -44,14 +46,17 @@ public class PartitionTest {
 
   @Test
   public void testEquals() {
-    Assert.assertNotEquals(TEST1, TEST2);
-    Assert.assertNotEquals("NULL", TEST1);
-    Assert.assertNotEquals(null, TEST1);
-    Assert.assertEquals(TEST1, TEST1);
+    Assert.assertNotEquals(TEST1, TEST2, "Dissimilar partitions are equal");
+    Assert.assertNotEquals("NULL", TEST1, "Partition equal to String");
+    Assert.assertNotEquals(null, TEST1, "Partition equal to null");
+    Assert.assertEquals(TEST1, TEST1, "Partition not equal to itself");
   }
 
   @Test
   public void testHashCode() {
-    Assert.assertNotEquals(TEST1.hashCode(), TEST2.hashCode());
+    Assert.assertNotEquals(
+        TEST1.hashCode(),
+        TEST2.hashCode(),
+        "Test partitions have the same hashcode");
   }
 }

@@ -1,0 +1,42 @@
+package json.parser;
+
+import java.util.List;
+import json.utils.ContentType;
+import json.utils.JSONElementFactory;
+import json.utils.LocatedJSONException;
+import json.utils.Partition;
+import json.utils.StringStack;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * @author James Tapsell
+ */
+public final class JSONStringFactory implements JSONElementFactory {
+  private static final JSONStringFactory INSTANCE = new JSONStringFactory();
+
+  public static JSONStringFactory getInstance() {
+    return INSTANCE;
+  }
+  private JSONStringFactory() {}
+  @Override
+  public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack) throws LocatedJSONException {
+    final int startIndex = stack.getIndex();
+    stack.pop();
+    boolean escaped = false;
+    while (stack.isAvailable()) {
+      final char c = stack.pop();
+      if (c == '\\') {
+        escaped = !escaped;
+      } else if (c == '"' && !escaped) {
+        partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.STRING));
+        return;
+      }
+    }
+    throw new LocatedJSONException("Unterminated String", stack, startIndex);
+  }
+
+  @Override
+  public boolean isNext(final @NotNull StringStack stack) {
+    return stack.peek() == '"';
+  }
+}

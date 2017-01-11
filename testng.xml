@@ -1,10 +1,23 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Whole Test">
-    <test name="JSON">
+<suite name="JSON Tests">
+    <test name="Utilities">
         <classes>
-            <class name="JSONPartitionerTest"/>
-            <class name="ContentTypeTest"/>
-            <class name="PartitionTest"/>
+            <class name="utils.PartitionTest"/>
+        </classes>
+    </test>
+    <test name="Simple types">
+        <classes>
+            <class name="json.types.JSONArrayTest"/>
+            <class name="json.types.JSONBooleanTest"/>
+            <class name="json.types.JSONNullTest"/>
+            <class name="json.types.JSONNumberTest"/>
+            <class name="json.types.JSONObjectTest"/>
+            <class name="json.types.JSONStringTest"/>
+        </classes>
+    </test>
+    <test name="General">
+        <classes>
+            <class name="json.JSONGeneralTest"/>
         </classes>
     </test>
 </suite>

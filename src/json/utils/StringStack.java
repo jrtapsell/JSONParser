@@ -2,29 +2,28 @@ package json.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * @author James Tapsell
  */
 public class StringStack {
-  private String s;
+  private final String s;
   private int index;
   private final List<Integer> lines;
-  public static final String NL = System.lineSeparator();
+  private static final String LINE_SEPARATOR = System.lineSeparator();
 
   public StringStack(final String s) {
     this(s, 0);
   }
 
-  public StringStack(final String s, final int i) {
+  private StringStack(final String s, final int i) {
     this.s = s;
-    this.index = i;
+    index = i;
     lines =calculateLines(s);
   }
 
   public char pop() {
-    char result = s.charAt(index);
+    final char result = s.charAt(index);
     index++;
     return result;
   }
@@ -37,7 +36,7 @@ public class StringStack {
     return s.charAt(index);
   }
 
-  public boolean nextIs(final String text) {
+  public boolean isNext(final CharSequence text) {
     final int length = text.length();
     if (length + index > s.length()) {
       return false;
@@ -46,15 +45,15 @@ public class StringStack {
     return available() >= length && substring.equals(text);
   }
 
-  public int available() {
+  private int available() {
     return s.length() - index;
   }
 
-  public boolean isComplete() {
+  private boolean isComplete() {
     return available() == 0;
   }
 
-  public void consume(final String text) {
+  public void consume(final CharSequence text) {
     consume(text.length());
   }
 
@@ -80,30 +79,30 @@ public class StringStack {
     }
   }
 
-  public static List<Integer> calculateLines(String text) {
-    List<Integer> newLines = new ArrayList<>();
+  private static List<Integer> calculateLines(final String text) {
+    final List<Integer> newLines = new ArrayList<>();
     newLines.add(0);
-    int line = 0;
-    for (int i = 0; (i + NL.length()) < text.length(); i++) {
-      final String candidateNewline = text.substring(i, i + NL.length());
-      if (NL.equals(candidateNewline)) {
-        newLines.add(i + NL.length());
+    final int line = 0;
+    for (int i = 0; i + LINE_SEPARATOR.length() < text.length(); i++) {
+      final String candidateNewline = text.substring(i, i + LINE_SEPARATOR.length());
+      if (LINE_SEPARATOR.equals(candidateNewline)) {
+        newLines.add(i + LINE_SEPARATOR.length());
       }
     }
     return newLines;
   }
 
-  public int lineStart(int position) {
-    int index = getLineIndex(position);
-    return lines.get(index);
+  public int lineStart(final int position) {
+    final int lineIndex = getLineIndex(position);
+    return lines.get(lineIndex);
   }
 
-  private int getLineIndex(int position) {
+  private int getLineIndex(final int position) {
     if (position < 0 || position >= s.length()) {
       throw new AssertionError("Bad Location");
     }
     for (int i = 0; i < lines.size() - 1; i++) {
-      int lineStart = lines.get(i + 1);
+      final int lineStart = lines.get(i + 1);
       if (lineStart > position) {
         return i;
       }
@@ -111,17 +110,13 @@ public class StringStack {
     return lines.size() - 1;
   }
 
-  public String getLine(int position) {
-    int index = getLineIndex(position);
-    int end;
-    if (index == lines.size() - 1) {
-      end = s.length();
-    } else {
-      end = lines.get(index + 1);
-    }
-    int start = lines.get(index);
+  public String getLine(final int position) {
+    final int lineIndex = getLineIndex(position);
+    final boolean last = lineIndex == (lines.size() - 1);
+    final int end = last ? s.length() : lines.get(lineIndex + 1);
+    final int start = lines.get(lineIndex);
 
     final String substring = s.substring(start, end);
-    return substring.endsWith(NL) ? substring.substring(0, substring.length() - NL.length()) : substring;
+    return substring.endsWith(LINE_SEPARATOR) ? substring.substring(0, substring.length() - LINE_SEPARATOR.length()) : substring;
   }
 }
