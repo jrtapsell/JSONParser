@@ -1,8 +1,13 @@
-package json;
+package json.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
+import json.utils.ContentType;
+import json.utils.LocatedJSONException;
+import json.utils.Partition;
+import json.utils.StringStack;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author James Tapsell
@@ -10,16 +15,20 @@ import java.util.Stack;
 public class JSON {
   private JSON() {}
 
-  public static List<Partition> getPartitions(String s) throws JsonException {
-    final Stack<ContentType> stack = new Stack<>();
+  @Contract("_ -> !null")
+  public static List<Partition> parse(final @NotNull String s) throws LocatedJSONException {
     final List<Partition> partitions = new ArrayList<>();
     final StringStack ss = new StringStack(s);
     parseAny(partitions, ss);
     consumeWhitespace(partitions,ss);
+    if (ss.isAvailable()) {
+      throw new LocatedJSONException("Bad character after JSON", ss);
+    }
     return partitions;
   }
 
-  private static void parseAny(List<Partition> partitions, StringStack ss) throws JsonException {
+
+  private static void parseAny(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException {
     consumeWhitespace(partitions, ss);
     if (parseKeyable(partitions, ss)) {
       return;
@@ -30,23 +39,17 @@ public class JSON {
     throw new LocatedJSONException("Unknown character: " + ss.peek(), ss);
   }
 
-  private static void consumeWhitespace(List<Partition> partitions, StringStack ss) {
+  private static void consumeWhitespace(final List<Partition> partitions, final StringStack ss) {
     if (ss.isAvailable() && Character.isWhitespace(ss.peek())) {
-      int startIndex = ss.getIndex();
-      seekWhitespace(ss);
+      final int startIndex = ss.getIndex();
+      ss.seekWhitespace();
       if (ss.getIndex() != startIndex) {
         partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.SPACE));
       }
     }
   }
 
-  private static void seekWhitespace(StringStack ss) {
-    while (ss.isAvailable() && Character.isWhitespace(ss.peek())) {
-      ss.pop();
-    }
-  }
-
-  private static boolean parseUnkeyable(List<Partition> partitions, StringStack ss) throws JsonException {
+  private static boolean parseUnkeyable(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException {
     if (ss.peek() == '{') {
       parseObject(partitions, ss);
       return true;
@@ -58,11 +61,12 @@ public class JSON {
     return false;
   }
 
-  private static void parseArray(List<Partition> partitions, StringStack ss) throws JsonException{
+  private static void parseArray(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException{
     int startIndex = ss.getIndex();
+    final int origin = startIndex;
     ss.pop();
     while (ss.isAvailable()) {
-      seekWhitespace(ss);
+      ss.seekWhitespace();
       if (ss.peek() == ']') {
         ss.pop();
         partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.ARRAY));
@@ -71,22 +75,23 @@ public class JSON {
       partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.ARRAY));
       parseAny(partitions, ss);
       startIndex = ss.getIndex();
-      seekWhitespace(ss);
+      ss.seekWhitespace();
       if (ss.peek() == ']') {
         continue;
       }
       if (ss.pop() != ',') {
-        throw new LocatedJSONException("Missing comms", ss);
+        throw new LocatedJSONException("Missing comma", ss);
       }
     }
-    throw new JsonException("Unterminated array");
+    throw new LocatedJSONException("Unterminated array", ss, origin);
   }
 
-  private static void parseObject(List<Partition> partitions, StringStack ss) throws JsonException {
+  private static void parseObject(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException {
     int startIndex = ss.getIndex();
+    final int origin = startIndex;
     ss.pop();
     while (ss.isAvailable()) {
-      seekWhitespace(ss);
+      ss.seekWhitespace();
       if (ss.peek() == '}') {
         ss.pop();
         partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.OBJECT));
@@ -95,15 +100,15 @@ public class JSON {
       partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.OBJECT));
       parseKeyable(partitions, ss);
       startIndex = ss.getIndex();
-      seekWhitespace(ss);
+      ss.seekWhitespace();
       if (ss.pop() != ':') {
         throw new LocatedJSONException("Missing : ", ss);
       }
-      seekWhitespace(ss);
+      ss.seekWhitespace();
       partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.OBJECT));
       parseAny(partitions, ss);
       startIndex = ss.getIndex();
-      seekWhitespace(ss);
+      ss.seekWhitespace();
       if (ss.peek() == '}') {
         continue;
       }
@@ -111,10 +116,10 @@ public class JSON {
         throw new LocatedJSONException("Missing , ", ss);
       }
     }
-    throw new JsonException("UnterminatedObject");
+    throw new LocatedJSONException("Unterminated Object",ss, origin);
   }
 
-  private static boolean parseKeyable(List<Partition> partitions, StringStack ss) throws JsonException {
+  private static boolean parseKeyable(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException {
     if (checkKeyword(partitions, ss, "true", ContentType.BOOLEAN)) {
       return true;
     }
@@ -128,25 +133,34 @@ public class JSON {
       readNumber(partitions, ss);
       return true;
     }
-    if (ss.peek() == '"') {
-      int startIndex = ss.getIndex();
-      ss.pop();
-      boolean escaped = false;
-      while (ss.isAvailable()) {
-        char c = ss.pop();
-        if (c == '\\') {
-          escaped = !escaped;
-        } else if (c == '"' && !escaped) {
-          partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.STRING));
-          return true;
-        }
-      }
-      throw new JsonException("Unterminated String");
+    if (readString(partitions, ss)) {
+      return true;
     }
     return false;
   }
 
-  private static void readNumber(List<Partition> partitions, StringStack ss) throws JsonException {
+  private static boolean readString(List<Partition> partitions, StringStack ss) throws LocatedJSONException {
+    if (ss.peek() != '"') {
+      return false;
+    }
+
+    final int startIndex = ss.getIndex();
+    ss.pop();
+    boolean escaped = false;
+    while (ss.isAvailable()) {
+      final char c = ss.pop();
+      if (c == '\\') {
+        escaped = !escaped;
+      } else if (c == '"' && !escaped) {
+        partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.STRING));
+        return true;
+      }
+    }
+
+    throw new LocatedJSONException("Unterminated String", ss, startIndex);
+  }
+
+  private static void readNumber(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException {
     boolean decimal = false; // Only allow a decimal once
     final int startIndex = ss.getIndex();
     if (ss.peek() == '-') {
@@ -155,7 +169,7 @@ public class JSON {
     int read = 0;
     while (ss.isAvailable() && (Character.isDigit(ss.peek()) || ss.peek() == '.')) {
       read++;
-      char c = ss.pop();
+      final char c = ss.pop();
       if (c == '.') {
         if (decimal) {
           ss.unpop();
@@ -172,7 +186,7 @@ public class JSON {
     partitions.add(new Partition(startIndex, endIndex, ContentType.NUMBER));
   }
 
-  private static boolean checkKeyword(List<Partition> partitions, StringStack ss, String keyword, ContentType type) {
+  private static boolean checkKeyword(final List<Partition> partitions, final StringStack ss, final String keyword, final ContentType type) {
     if (ss.nextIs(keyword)) {
       partitions.add(new Partition(ss.getIndex(), ss.getIndex() + keyword.length(), type));
       ss.consume(keyword);

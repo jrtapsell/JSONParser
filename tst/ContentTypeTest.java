@@ -1,4 +1,4 @@
-import json.ContentType;
+import json.utils.ContentType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -1,4 +1,6 @@
-package json;
+package json.utils;
+
+import org.jetbrains.annotations.Contract;
 
 /**
  * @author James Tapsell
@@ -6,6 +8,7 @@ package json;
 public enum ContentType {
   OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL, SPACE;
 
+  @Contract(" ->  !null")
   public static String[] names() {
     final ContentType[] values = values();
     final int length = values.length;

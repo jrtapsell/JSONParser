@@ -1,4 +1,4 @@
-package json;
+package json.utils;
 
 import java.util.Objects;
 
@@ -23,7 +23,7 @@ public class Partition {
   private final String name;
   private final ContentType type;
 
-  public Partition(int start, int end, ContentType name) {
+  public Partition(final int start, final int end, final ContentType name) {
     this.start = start;
     this.end = end;
     this.name = name.name();
@@ -32,7 +32,7 @@ public class Partition {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("json.Partition{");
+    final StringBuilder sb = new StringBuilder("json.utils.Partition{");
     sb.append("start=").append(start);
     sb.append(", end=").append(end);
     sb.append(", name='").append(name).append('\'');
@@ -41,14 +41,14 @@ public class Partition {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }
     if (!(o instanceof Partition)) {
       return false;
     }
-    Partition partition = (Partition) o;
+    final Partition partition = (Partition) o;
     return start == partition.start &&
         end == partition.end &&
         Objects.equals(name, partition.name);

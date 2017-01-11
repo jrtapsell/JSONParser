@@ -4,20 +4,20 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import json.JSON;
-import json.JsonException;
-import json.Partition;
+import json.parser.JSON;
+import json.utils.LocatedJSONException;
+import json.utils.Partition;
 
 /**
  * @author James Tapsell
  */
 public class Example {
-  public static void main(final String... args) throws JsonException, IOException {
-    String test = String.join("\n", Files.readAllLines(Paths.get("big.json")));
-    List<Partition> paa = part(test);
+  public static void main(final String... args) throws LocatedJSONException, IOException {
+    final String test = String.join("\n", Files.readAllLines(Paths.get("big.json")));
+    final List<Partition> paa = part(test);
     try (PrintStream ps = new PrintStream(new FileOutputStream("out.html"))) {
-      for (Partition p : paa) {
-        String color;
+      for (final Partition p : paa) {
+        final String color;
         switch (p.getType()) {
           case ARRAY:
             color = "red";
@@ -49,15 +49,15 @@ public class Example {
     }
   }
 
-  private static List<Partition> part(String test) throws JsonException {
-    long n = System.nanoTime();
-    final List<Partition> partitions = JSON.getPartitions(test);
+  private static List<Partition> part(final String test) throws LocatedJSONException {
+    final long n = System.nanoTime();
+    final List<Partition> partitions = JSON.parse(test);
     final long x = System.nanoTime() - n;
     System.err.printf("%d.%dms%n", x % 1000000, x / 10000000);
     return partitions;
   }
 
-  private static String getText(String test, Partition p) {
+  private static String getText(final String test, final Partition p) {
     String substring = test.substring(p.getStart(), p.getEnd());
     substring = substring.replaceAll("\n", "<br>");
     substring = substring.replaceAll(" ", "&nbsp;");

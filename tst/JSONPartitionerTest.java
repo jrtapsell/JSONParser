@@ -6,11 +6,10 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import json.ContentType;
-import json.JSON;
-import json.JsonException;
-import json.LocatedJSONException;
-import json.Partition;
+import json.utils.ContentType;
+import json.parser.JSON;
+import json.utils.LocatedJSONException;
+import json.utils.Partition;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -20,32 +19,33 @@ import org.testng.annotations.Test;
 public class JSONPartitionerTest {
 
   @Test
-  public void testSimpleBoolean() throws JsonException {
+  public void testSimpleBoolean() throws LocatedJSONException {
     assertOutput("true", new Partition(0, 4, ContentType.BOOLEAN));
   }
 
-  @Test
-  public void testSimpleInteger() throws JsonException {
-    assertOutput("1234", new Partition(0, 4, ContentType.NUMBER));
+  @Test(dataProvider = "ints", dataProviderClass = Providers.class)
+  public void testSimpleInteger(int value) throws LocatedJSONException {
+    final String input = String.valueOf(value);
+    assertOutput(input, new Partition(0, input.length(), ContentType.NUMBER));
   }
 
   @Test
-  public void testSimpleNull() throws JsonException {
+  public void testSimpleNull() throws LocatedJSONException {
     assertOutput("null", new Partition(0, 4, ContentType.NULL));
   }
 
-  @Test
-  public void testSimpleFloat() throws JsonException {
-    assertOutput("1234.5", new Partition(0, 6, ContentType.NUMBER));
+  @Test(dataProvider = "floats", dataProviderClass = Providers.class)
+  public void testSimpleFloats(String in) throws LocatedJSONException {
+    assertOutput(in, new Partition(0, in.length(), ContentType.NUMBER));
   }
 
   @Test
-  public void testSimpleString() throws JsonException {
+  public void testSimpleString() throws LocatedJSONException {
     assertOutput("\"Hello\"", new Partition(0, 7, ContentType.STRING));
   }
 
   @Test
-  public void testSimpleObject() throws JsonException {
+  public void testSimpleObject() throws LocatedJSONException {
     assertOutput(
         "{\"a\":\"b\"}",
         new Partition(0, 1, ContentType.OBJECT),
@@ -55,55 +55,55 @@ public class JSONPartitionerTest {
         new Partition(8, 9, ContentType.OBJECT));
   }
 
-  @Test(expectedExceptions = {JsonException.class})
-  public void testUnendedString() throws JsonException {
-    JSON.getPartitions("\"");
+  @Test
+  public void testUnendedString() throws LocatedJSONException {
+    JSON.parse("\"");
   }
 
-  @Test(expectedExceptions = {JsonException.class})
-  public void testUnendedObject() throws JsonException {
-    JSON.getPartitions("{");
+  @Test
+  public void testUnendedObject() throws LocatedJSONException {
+    JSON.parse("{");
   }
 
-  @Test(expectedExceptions = {JsonException.class})
-  public void testUnendedArray() throws JsonException {
-    JSON.getPartitions("[");
+  @Test
+  public void testUnendedArray() throws LocatedJSONException {
+    JSON.parse("[");
   }
 
-  @Test(expectedExceptions = {JsonException.class})
-  public void testMalformedArray() throws JsonException {
-    JSON.getPartitions("[1 2]");
+  @Test
+  public void testMalformedArray() throws LocatedJSONException {
+    assertErrorIndex(() -> JSON.parse("[1 2]"), -1);
   }
 
-  @Test(expectedExceptions = {JsonException.class})
-  public void testMalformedObject() throws JsonException {
-    JSON.getPartitions("{\"a\" \"b\"}");
+  @Test
+  public void testMalformedObject() throws LocatedJSONException {
+    JSON.parse("{\"a\" \"b\"}");
   }
 
-  @Test(expectedExceptions = {JsonException.class})
-  public void testMalformedObject2() throws JsonException {
-    JSON.getPartitions("{\"a\":\"b\" \"a\":\"b\"}");
+  @Test (expectedExceptions = LocatedJSONException.class)
+  public void testMalformedObject2() throws LocatedJSONException {
+    JSON.parse("{\"a\":\"b\" \"a\":\"b\"}");
   }
 
-  @Test(expectedExceptions = {JsonException.class})
-  public void testNotJSON() throws JsonException {
-    JSON.getPartitions("z");
+  @Test (expectedExceptions = LocatedJSONException.class)
+  public void testNotJSON() throws LocatedJSONException {
+    JSON.parse("z");
   }
 
-  @Test()
-  public void testEmptyArray() throws JsonException {
+  @Test
+  public void testEmptyArray() throws LocatedJSONException {
     assertOutput("[]",
         new Partition(0, 2, ContentType.ARRAY));
   }
 
-  @Test()
-  public void testEmptyObject() throws JsonException {
+  @Test
+  public void testEmptyObject() throws LocatedJSONException {
     assertOutput("{}",
         new Partition(0, 2, ContentType.OBJECT));
   }
 
   @Test
-  public void testSimpleSpacedObject() throws JsonException {
+  public void testSimpleSpacedObject() throws LocatedJSONException {
     assertOutput(
         " { \"a\" : \"b\" } ",
         new Partition(0, 1, ContentType.SPACE),
@@ -116,7 +116,7 @@ public class JSONPartitionerTest {
   }
 
   @Test
-  public void testSimpleArray() throws JsonException {
+  public void testSimpleArray() throws LocatedJSONException {
     assertOutput(
         "[1,2]",
         new Partition(0, 1, ContentType.ARRAY),
@@ -127,7 +127,7 @@ public class JSONPartitionerTest {
   }
 
   @Test
-  public void testSpacedArray() throws JsonException {
+  public void testSpacedArray() throws LocatedJSONException {
     assertOutput(
         " [ 1 , 2 ] ",
         new Partition(0, 1, ContentType.SPACE),
@@ -139,25 +139,24 @@ public class JSONPartitionerTest {
         new Partition(10, 11, ContentType.SPACE));
   }
 
-  @Test(expectedExceptions = {LocatedJSONException.class}, expectedExceptionsMessageRegExp = "Exception \\{'Float with 2 dots' at 6 of '1234.5.'\\}")
-  public void testBadFloat() throws JsonException {
-    JSON.getPartitions("1234.5.");
+  @Test (
+  dataProviderClass = Providers.class,
+  dataProvider = "badFloats")
+  public void testBadFloats(String value, int failOffset) throws LocatedJSONException {
+    assertErrorIndex(() -> JSON.parse(value), failOffset);
   }
 
-  @Test(expectedExceptions = {LocatedJSONException.class}, expectedExceptionsMessageRegExp = "Exception \\{'Only a -' at 1 of '-'\\}")
-  public void testOnlyNegitive() throws JsonException {
-    JSON.getPartitions("-");
+  private void assertErrorIndex(ThrowingRunnable<LocatedJSONException> o, int i) {
+    try {
+      o.run();
+      Assert.fail("Test threw no exception");
+    } catch (LocatedJSONException ex) {
+      Assert.assertEquals(ex.getPosition(), i);
+    }
   }
 
-
-
-  @Test(expectedExceptions = {LocatedJSONException.class}, expectedExceptionsMessageRegExp = "Exception \\{'Only a -' at 1 of '--'\\}")
-  public void testDoubleNegitive() throws JsonException {
-    JSON.getPartitions("--");
-  }
-
-  private void assertOutput(final String input, final Partition... output) throws JsonException {
-    final List<Partition> partitions = JSON.getPartitions(input);
+  private void assertOutput(final String input, final Partition... output) throws LocatedJSONException {
+    final List<Partition> partitions = JSON.parse(input);
     final List<Partition> expected = Arrays.asList(output);
     if (!expected.equals(partitions)) {
       System.out.println("Expected:");
@@ -169,8 +168,12 @@ public class JSONPartitionerTest {
   }
 
   @Test
-  public void bigOne() throws IOException, JsonException {
-    String s = String.join(System.lineSeparator(), Files.readAllLines(Paths.get("big.json")));
-    JSON.getPartitions(s);
+  public void bigOne() throws IOException, LocatedJSONException {
+    final String s = String.join(System.lineSeparator(), Files.readAllLines(Paths.get("big.json")));
+    JSON.parse(s);
+  }
+
+  private interface ThrowingRunnable<T extends Throwable> {
+    public void run() throws T;
   }
 }

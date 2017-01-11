@@ -1,5 +1,5 @@
-import json.ContentType;
-import json.Partition;
+import json.utils.ContentType;
+import json.utils.Partition;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -1,4 +1,4 @@
-package json;
+package json.utils;
 
 import java.util.function.Predicate;
 
@@ -8,17 +8,19 @@ import java.util.function.Predicate;
 public class StringStack {
   private String s;
   private int index;
-  public StringStack(String s) {
+  public StringStack(final String s) {
     this(s, 0);
   }
 
-  public StringStack(String s, int i) {
+  public StringStack(final String s, final int i) {
     this.s = s;
     this.index = i;
   }
 
   public char pop() {
-    return s.charAt(index++);
+    char result = s.charAt(index);
+    index++;
+    return result;
   }
 
   public int getIndex() {
@@ -29,7 +31,7 @@ public class StringStack {
     return s.charAt(index);
   }
 
-  public boolean nextIs(String text) {
+  public boolean nextIs(final String text) {
     final int length = text.length();
     if (length + index > s.length()) {
       return false;
@@ -46,11 +48,11 @@ public class StringStack {
     return available() == 0;
   }
 
-  public void consume(String text) {
+  public void consume(final String text) {
     consume(text.length());
   }
 
-  private void consume(int length) {
+  private void consume(final int length) {
     index += length;
   }
 
@@ -64,5 +66,11 @@ public class StringStack {
 
   public void unpop() {
     index--;
+  }
+
+  void seekWhitespace() {
+    while (isAvailable() && Character.isWhitespace(peek())) {
+      pop();
+    }
   }
 }
