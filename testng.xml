@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Whole Test">
+    <test name="JSON">
+        <classes>
+            <class name="JSONPartitionerTest"/>
+            <class name="ContentTypeTest"/>
+            <class name="PartitionTest"/>
+        </classes>
+    </test>
+</suite>
