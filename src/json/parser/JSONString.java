@@ -26,4 +26,8 @@ public class JSONString {
 
     throw new LocatedJSONException("Unterminated String", ss, startIndex);
   }
+
+  static boolean isString(StringStack ss) {
+    return ss.peek() == '"';
+  }
 }

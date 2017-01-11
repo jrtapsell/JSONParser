@@ -29,22 +29,23 @@ public class JSON {
 
   static void parseAny(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException {
     Utils.consumeWhitespace(partitions, ss);
-    if (JSONKeyword.readKeyword(partitions, ss)) {
+    if (JSONKeyword.isKeyword(ss)) {
+      JSONKeyword.readKeyword(partitions, ss);
       return;
     }
     if (JSONNumber.isNumber(ss)) {
       JSONNumber.readNumber(partitions, ss);
       return;
     }
-    if (ss.peek() == '"') {
+    if (JSONString.isString(ss)) {
       JSONString.readString(partitions, ss);
       return;
     }
-    if (ss.peek() == '{') {
+    if (JSONObject.isObject(ss)) {
       JSONObject.parseObject(partitions, ss);
       return;
     }
-    if (ss.peek() == '[') {
+    if (JSONArray.isArray(ss)) {
       JSONArray.parseArray(partitions, ss);
       return;
     }

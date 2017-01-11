@@ -45,4 +45,8 @@ public class JSONObject {
     }
     throw new LocatedJSONException("Unterminated JSONObject",ss, origin);
   }
+
+  static boolean isObject(StringStack ss) {
+    return ss.peek() == '{';
+  }
 }

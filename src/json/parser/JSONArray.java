@@ -2,6 +2,7 @@ package json.parser;
 
 import java.util.List;
 import json.utils.ContentType;
+import json.utils.JSONElement;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
 import json.utils.StringStack;
@@ -33,5 +34,9 @@ public class JSONArray {
       }
     }
     throw new LocatedJSONException("Unterminated array", ss, origin);
+  }
+
+  static boolean isArray(StringStack ss) {
+    return ss.peek() == '[';
   }
 }
