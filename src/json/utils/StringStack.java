@@ -2,6 +2,7 @@ package json.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author James Tapsell
@@ -12,14 +13,14 @@ public class StringStack {
   private final List<Integer> lines;
   private static final String LINE_SEPARATOR = System.lineSeparator();
 
-  public StringStack(final String s) {
+  public StringStack(final @NotNull String s) {
     this(s, 0);
   }
 
-  private StringStack(final String s, final int i) {
+  private StringStack(final @NotNull String s, final int i) {
     this.s = s;
     index = i;
-    lines =calculateLines(s);
+    lines = calculateLines(s);
   }
 
   public char pop() {
@@ -36,7 +37,7 @@ public class StringStack {
     return s.charAt(index);
   }
 
-  public boolean isNext(final CharSequence text) {
+  public boolean isNext(final @NotNull CharSequence text) {
     final int length = text.length();
     if (length + index > s.length()) {
       return false;
@@ -53,7 +54,7 @@ public class StringStack {
     return available() == 0;
   }
 
-  public void consume(final CharSequence text) {
+  public void consume(final @NotNull CharSequence text) {
     consume(text.length());
   }
 
@@ -79,10 +80,9 @@ public class StringStack {
     }
   }
 
-  private static List<Integer> calculateLines(final String text) {
+  private static List<Integer> calculateLines(final @NotNull String text) {
     final List<Integer> newLines = new ArrayList<>();
     newLines.add(0);
-    final int line = 0;
     for (int i = 0; i + LINE_SEPARATOR.length() < text.length(); i++) {
       final String candidateNewline = text.substring(i, i + LINE_SEPARATOR.length());
       if (LINE_SEPARATOR.equals(candidateNewline)) {

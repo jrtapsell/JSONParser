@@ -39,7 +39,7 @@ public final class JSON {
   }
 
 
-  static void parseAny(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException {
+  static void parseAny(final @NotNull List<Partition> partitions, final @NotNull StringStack ss) throws LocatedJSONException {
     for (final JSONElementFactory factory : FACTORIES) {
       if (factory.isNext(ss)) {
         factory.read(partitions, ss);
@@ -52,7 +52,7 @@ public final class JSON {
     throw new LocatedJSONException(message, ss);
   }
 
-  private static void consumeWhitespace(final Collection<Partition> partitions, final StringStack ss) {
+  private static void consumeWhitespace(final @NotNull Collection<Partition> partitions, final StringStack ss) {
     if (ss.isAvailable() && Character.isWhitespace(ss.peek())) {
       final int startIndex = ss.getIndex();
       ss.seekWhitespace();

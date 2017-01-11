@@ -1,6 +1,8 @@
 package json.utils;
 
 import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author James Tapsell
@@ -23,7 +25,7 @@ public class Partition {
   private final String name;
   private final ContentType type;
 
-  public Partition(final int start, final int end, final ContentType name) {
+  public Partition(final int start, final int end, final @NotNull ContentType name) {
     this.start = start;
     this.end = end;
     this.name = name.name();
@@ -41,7 +43,7 @@ public class Partition {
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public boolean equals(final @Nullable Object obj) {
     if (this == obj) {
       return true;
     }
@@ -49,9 +51,9 @@ public class Partition {
       return false;
     }
     final Partition partition = (Partition) obj;
-    return start == partition.start &&
-        end == partition.end &&
-        Objects.equals(name, partition.name);
+    return (start == partition.getStart()) &&
+        (end == partition.getEnd()) &&
+        Objects.equals(name, partition.getName());
   }
 
   @Override

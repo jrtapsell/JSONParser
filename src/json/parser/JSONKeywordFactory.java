@@ -39,7 +39,11 @@ public final class JSONKeywordFactory implements JSONElementFactory {
     throw new LocatedJSONException("Unknown keyword", stack);
   }
 
-  private static boolean checkKeyword(final Collection<Partition> partitions, final StringStack ss, final CharSequence keyword, final ContentType type) {
+  private static boolean checkKeyword(
+      final @NotNull Collection<Partition> partitions,
+      final @NotNull StringStack ss,
+      final @NotNull CharSequence keyword,
+      final @NotNull ContentType type) {
     if (ss.isNext(keyword)) {
       partitions.add(new Partition(ss.getIndex(), ss.getIndex() + keyword.length(), type));
       ss.consume(keyword);

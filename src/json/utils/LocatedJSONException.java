@@ -1,16 +1,27 @@
 package json.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author James Tapsell
  */
 public class LocatedJSONException extends Exception {
   private final int position;
 
-  public LocatedJSONException(final String s, final StringStack stack) {
+  public LocatedJSONException(
+      final @NotNull String s,
+      final @NotNull StringStack stack) {
     this(s, stack, stack.getIndex());
   }
-  public LocatedJSONException(final String s, final StringStack stack, final int position) {
-    super(s + System.lineSeparator() + getLineDisplay(stack, position));
+  public LocatedJSONException(
+      final @NotNull String s,
+      final @NotNull StringStack stack,
+      final int position) {
+    super(String.format(
+        "%s%s%s",
+        s,
+        System.lineSeparator(),
+        getLineDisplay(stack, position)));
     final StringStack ss = stack;
     this.position = position;
   }
@@ -19,7 +30,7 @@ public class LocatedJSONException extends Exception {
     return position;
   }
 
-  private static String getLineDisplay(final StringStack ss, final int position) {
+  private static String getLineDisplay(final @NotNull StringStack ss, final int position) {
     final int lineStart = ss.lineStart(position);
     final String line = ss.getLine(position);
     final int offset = position - lineStart;
