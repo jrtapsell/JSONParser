@@ -20,7 +20,7 @@ public class JSON {
     final List<Partition> partitions = new ArrayList<>();
     final StringStack ss = new StringStack(s);
     parseAny(partitions, ss);
-    consumeWhitespace(partitions,ss);
+    Utils.consumeWhitespace(partitions,ss);
     if (ss.isAvailable()) {
       throw new LocatedJSONException("Bad character after JSON", ss);
     }
@@ -29,7 +29,7 @@ public class JSON {
 
 
   private static void parseAny(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException {
-    consumeWhitespace(partitions, ss);
+    Utils.consumeWhitespace(partitions, ss);
     if (parseKeyable(partitions, ss)) {
       return;
     }
@@ -37,16 +37,6 @@ public class JSON {
       return;
     }
     throw new LocatedJSONException("Unknown character: " + ss.peek(), ss);
-  }
-
-  private static void consumeWhitespace(final List<Partition> partitions, final StringStack ss) {
-    if (ss.isAvailable() && Character.isWhitespace(ss.peek())) {
-      final int startIndex = ss.getIndex();
-      ss.seekWhitespace();
-      if (ss.getIndex() != startIndex) {
-        partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.SPACE));
-      }
-    }
   }
 
   private static boolean parseUnkeyable(final List<Partition> partitions, final StringStack ss) throws LocatedJSONException {
@@ -98,7 +88,10 @@ public class JSON {
         return;
       }
       partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.OBJECT));
-      parseKeyable(partitions, ss);
+      if (ss.peek() != '"') {
+        throw new LocatedJSONException("Key must be a string", ss);
+      }
+      readString(partitions, ss);
       startIndex = ss.getIndex();
       ss.seekWhitespace();
       if (ss.pop() != ':') {
@@ -133,17 +126,14 @@ public class JSON {
       readNumber(partitions, ss);
       return true;
     }
-    if (readString(partitions, ss)) {
+    if (ss.peek() == '"') {
+      readString(partitions, ss);
       return true;
     }
     return false;
   }
 
   private static boolean readString(List<Partition> partitions, StringStack ss) throws LocatedJSONException {
-    if (ss.peek() != '"') {
-      return false;
-    }
-
     final int startIndex = ss.getIndex();
     ss.pop();
     boolean escaped = false;

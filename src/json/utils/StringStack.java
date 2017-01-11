@@ -56,7 +56,7 @@ public class StringStack {
     index += length;
   }
 
-  boolean isAvailable() {
+  public boolean isAvailable() {
     return !isComplete();
   }
 
@@ -68,7 +68,7 @@ public class StringStack {
     index--;
   }
 
-  void seekWhitespace() {
+  public void seekWhitespace() {
     while (isAvailable() && Character.isWhitespace(peek())) {
       pop();
     }
