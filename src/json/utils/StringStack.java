@@ -117,7 +117,9 @@ public class StringStack {
     final int start = lines.get(lineIndex);
 
     final String substring = s.substring(start, end);
-    return substring.endsWith(LINE_SEPARATOR) ? substring.substring(0, substring.length() - LINE_SEPARATOR.length()) : substring;
+    return substring.endsWith(LINE_SEPARATOR) ?
+        substring.substring(0, substring.length() - LINE_SEPARATOR.length()) :
+        substring;
   }
 
   public String getText(int startIndex, int index) {

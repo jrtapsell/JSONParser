@@ -12,13 +12,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author James Tapsell
  */
-public final class JSONNumberFactory implements JSONElementFactory {
-  private static final JSONNumberFactory INSTANCE = new JSONNumberFactory();
+public final class JsonNumberFactory implements JSONElementFactory {
+  private static final JsonNumberFactory INSTANCE = new JsonNumberFactory();
 
   public static JSONElementFactory getInstance() {
     return INSTANCE;
   }
-  private JSONNumberFactory() {}
+  private JsonNumberFactory() {}
 
   @Override
   public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack, final @NotNull JSONTreeElement parent) throws LocatedJSONException {

@@ -13,13 +13,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author James Tapsell
  */
-public final class JSONKeywordFactory implements JSONElementFactory {
-  private static final JSONKeywordFactory INSTANCE = new JSONKeywordFactory();
+public final class JsonKeywordFactory implements JSONElementFactory {
+  private static final JsonKeywordFactory INSTANCE = new JsonKeywordFactory();
 
   public static JSONElementFactory getInstance() {
     return INSTANCE;
   }
-  private JSONKeywordFactory() {}
+  private JsonKeywordFactory() {}
 
   @Override
   public boolean isNext(final @NotNull StringStack stack) {

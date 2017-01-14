@@ -21,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
 public final class Json {
 
   private static final JSONElementFactory[] FACTORIES = {
-      JSONKeywordFactory.getInstance(),
-      JSONNumberFactory.getInstance(),
-      JSONStringFactory.getInstance(),
-      JSONObjectFactory.getInstance(),
-      JSONArrayFactory.getInstance()
+      JsonKeywordFactory.getInstance(),
+      JsonNumberFactory.getInstance(),
+      JsonStringFactory.getInstance(),
+      JsonObjectFactory.getInstance(),
+      JsonArrayFactory.getInstance()
   };
   private Json() {}
 
