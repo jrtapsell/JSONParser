@@ -8,5 +8,5 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface JSONElementFactory {
   boolean isNext(@NotNull StringStack stack);
-  void read(@NotNull List<Partition> partitions, @NotNull StringStack stack) throws LocatedJSONException;
+  void read(@NotNull List<Partition> partitions, @NotNull StringStack stack, @NotNull JSONTreeElement parent) throws LocatedJSONException;
 }

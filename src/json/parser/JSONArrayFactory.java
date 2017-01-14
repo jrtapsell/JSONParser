@@ -3,6 +3,7 @@ package json.parser;
 import java.util.List;
 import json.utils.ContentType;
 import json.utils.JSONElementFactory;
+import json.utils.JSONTreeElement;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
 import json.utils.StringStack;
@@ -20,8 +21,10 @@ public final class JSONArrayFactory implements JSONElementFactory {
   private JSONArrayFactory() {}
 
   @Override
-  public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack) throws LocatedJSONException {
+  public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack, final @NotNull JSONTreeElement parent) throws LocatedJSONException {
     int startIndex = stack.getIndex();
+    final JSONTreeElement jte = new JSONTreeElement(ContentType.ARRAY, startIndex);
+    parent.addChild(jte);
     final int origin = startIndex;
     stack.pop();
     while (stack.isAvailable()) {
@@ -29,10 +32,11 @@ public final class JSONArrayFactory implements JSONElementFactory {
       if (stack.peek() == ']') {
         stack.pop();
         partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.ARRAY));
+        jte.finalise(stack.getIndex(), stack.getText(jte.getStartIndex(), stack.getIndex()));
         return;
       }
       partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.ARRAY));
-      JSON.parseAny(partitions, stack);
+      JSON.parseAny(partitions, stack, jte);
       startIndex = stack.getIndex();
       stack.seekWhitespace();
       if (stack.peek() != ']' && stack.pop() != ',') {

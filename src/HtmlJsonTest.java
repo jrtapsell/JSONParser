@@ -13,7 +13,8 @@ import json.utils.Partition;
  */
 final class HtmlJsonTest {
 
-  public static final String LINE_SEPARATOR = System.lineSeparator();
+  private static final String LINE_SEPARATOR = System.lineSeparator();
+  private static final long NS_IN_MS = (long) 1.0e6f;
 
   private HtmlJsonTest() {
   }
@@ -23,43 +24,37 @@ final class HtmlJsonTest {
     final List<Partition> paa = part(test);
     try (PrintStream ps = new PrintStream(new FileOutputStream("out.html"))) {
       for (final Partition p : paa) {
-        final String color;
-        switch (p.getType()) {
-          case ARRAY:
-            color = "red";
-            break;
-          case BOOLEAN:
-            color = "blue";
-            break;
-          case NULL:
-            color = "brown";
-            break;
-          case NUMBER:
-            color = "purple";
-            break;
-          case OBJECT:
-            color = "orange";
-            break;
-          case STRING:
-            color = "green";
-            break;
-          case SPACE:
-            color = "black";
-            break;
-          default:
-            color = "pink";
-            break;
-        }
-        ps.printf("<span style='color:%s'>%s</span>", color, getText(test, p));
+        ps.printf("<span style='color:%s'>%s</span>", getColour(p), getText(test, p));
       }
+    }
+  }
+
+  private static String getColour(final Partition partition) {
+    switch (partition.getType()) {
+      case ARRAY:
+        return "red";
+      case BOOLEAN:
+        return "blue";
+      case NULL:
+        return "brown";
+      case NUMBER:
+        return "purple";
+      case OBJECT:
+        return "orange";
+      case STRING:
+        return "green";
+      case SPACE:
+        return "black";
+      default:
+        return "pink";
     }
   }
 
   private static List<Partition> part(final String test) throws LocatedJSONException {
     final long n = System.nanoTime();
-    final List<Partition> partitions = JSON.parseString(test);
+    final List<Partition> partitions = JSON.parseString(test).getKey();
     final long x = System.nanoTime() - n;
-    System.err.printf("Parsing took %d.%dms%n", x / 1000000L, x % 10000000L);
+    System.err.printf("Parsing took %d.%dms%n", x / NS_IN_MS, x % NS_IN_MS);
     return partitions;
   }
 

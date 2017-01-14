@@ -3,6 +3,7 @@ package json.parser;
 import java.util.List;
 import json.utils.ContentType;
 import json.utils.JSONElementFactory;
+import json.utils.JSONTreeElement;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
 import json.utils.StringStack;
@@ -20,7 +21,7 @@ public final class JSONNumberFactory implements JSONElementFactory {
   private JSONNumberFactory() {}
 
   @Override
-  public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack) throws LocatedJSONException {
+  public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack, final @NotNull JSONTreeElement parent) throws LocatedJSONException {
     boolean decimal = false; // Only allow a decimal once
     final int startIndex = stack.getIndex();
     if (stack.peek() == '-') {
@@ -43,6 +44,9 @@ public final class JSONNumberFactory implements JSONElementFactory {
       throw new LocatedJSONException("Only a -", stack);
     }
     final int endIndex = stack.getIndex();
+    JSONTreeElement jte = new JSONTreeElement(ContentType.NUMBER, startIndex);
+    jte.finalise(endIndex, stack.getText(startIndex, endIndex));
+    parent.addChild(jte);
     partitions.add(new Partition(startIndex, endIndex, ContentType.NUMBER));
   }
 

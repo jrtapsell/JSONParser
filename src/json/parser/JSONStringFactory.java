@@ -3,6 +3,7 @@ package json.parser;
 import java.util.List;
 import json.utils.ContentType;
 import json.utils.JSONElementFactory;
+import json.utils.JSONTreeElement;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
 import json.utils.StringStack;
@@ -19,7 +20,7 @@ public final class JSONStringFactory implements JSONElementFactory {
   }
   private JSONStringFactory() {}
   @Override
-  public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack) throws LocatedJSONException {
+  public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack, final @NotNull JSONTreeElement tree) throws LocatedJSONException {
     final int startIndex = stack.getIndex();
     stack.pop();
     boolean escaped = false;

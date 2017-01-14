@@ -34,7 +34,7 @@ public class JSONTestBase {
   }
 
   protected void assertOutput(final String input, final Partition... output) throws LocatedJSONException {
-    final List<Partition> partitions = JSON.parseString(input);
+    final List<Partition> partitions = JSON.parseString(input).getKey();
     final List<Partition> expected = Arrays.asList(output);
     if (!expected.equals(partitions)) {
       System.out.println("Expected:");

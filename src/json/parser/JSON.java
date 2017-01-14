@@ -3,8 +3,10 @@ package json.parser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javafx.util.Pair;
 import json.utils.ContentType;
 import json.utils.JSONElementFactory;
+import json.utils.JSONTreeElement;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
 import json.utils.StringStack;
@@ -26,23 +28,24 @@ public final class JSON {
   private JSON() {}
 
   @Contract("_ -> !null")
-  public static List<Partition> parseString(final @NotNull String s) throws LocatedJSONException {
+  public static Pair<List<Partition>, JSONTreeElement> parseString(final @NotNull String s) throws LocatedJSONException {
     final List<Partition> partitions = new ArrayList<>();
     final StringStack ss = new StringStack(s);
     consumeWhitespace(partitions, ss);
-    parseAny(partitions, ss);
+    final JSONTreeElement root = new JSONTreeElement(null, 0);
+    parseAny(partitions, ss, root);
     consumeWhitespace(partitions,ss);
     if (ss.isAvailable()) {
       throw new LocatedJSONException("Bad character after JSON", ss);
     }
-    return partitions;
+    return new Pair<>(partitions, root);
   }
 
 
-  static void parseAny(final @NotNull List<Partition> partitions, final @NotNull StringStack ss) throws LocatedJSONException {
+  static void parseAny(final @NotNull List<Partition> partitions, final @NotNull StringStack ss, final @NotNull JSONTreeElement root) throws LocatedJSONException {
     for (final JSONElementFactory factory : FACTORIES) {
       if (factory.isNext(ss)) {
-        factory.read(partitions, ss);
+        factory.read(partitions, ss, root);
         return;
       }
     }
