@@ -4,11 +4,21 @@ apply plugin: 'checkstyle'
 repositories {
     mavenCentral()
 }
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0'
+    }
+}
 dependencies {
     compile 'org.jetbrains:annotations:15.0'
     checkstyle "com.puppycrawl.tools:checkstyle:7.4"
     testCompile 'org.testng:testng:6.9.13.6'
 }
+
+apply plugin: 'com.github.kt3k.coveralls'
 
 checkstyle {
     toolVersion = "7.4"
