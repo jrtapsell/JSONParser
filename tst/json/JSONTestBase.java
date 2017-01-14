@@ -16,7 +16,7 @@ public class JSONTestBase {
   protected void assertErrorIndex(final ThrowingRunnable<LocatedJSONException> o, final int expected) {
     try {
       o.run();
-      Assert.fail("Test threw no exception");
+      Assert.fail("Test threw no exception, expected a located exception");
     } catch (final LocatedJSONException ex) {
       final int actual = ex.getPosition();
       if (actual == expected) {
