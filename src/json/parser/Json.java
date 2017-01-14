@@ -28,7 +28,10 @@ public final class Json {
       JsonArrayFactory.getInstance()
   };
 
+  /** Hide coverage false positive. */
   private Json() {}
+
+  private static final Json j = new Json();
 
   /**
    * Parses a JSON String.
@@ -78,9 +81,7 @@ public final class Json {
     if (ss.isAvailable() && Character.isWhitespace(ss.peek())) {
       final int startIndex = ss.getIndex();
       ss.seekWhitespace();
-      if (ss.getIndex() != startIndex) {
-        partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.SPACE));
-      }
+      partitions.add(new Partition(startIndex, ss.getIndex(), ContentType.SPACE));
     }
   }
 }

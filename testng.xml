@@ -3,6 +3,9 @@
     <test name="Utilities">
         <classes>
             <class name="utils.PartitionTest"/>
+            <class name="utils.StringStackTest"/>
+            <class name="utils.JsonTreeElementTest"/>
+            <class name="utils.ContentTypeTest"/>
         </classes>
     </test>
     <test name="Simple types">

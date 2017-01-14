@@ -59,5 +59,9 @@ public class JsonObjectTest extends JsonTestBase {
         new Partition(14, 15, ContentType.SPACE));
   }
 
+  @Test
+  public void testBadKey() throws LocatedJsonException {
+    assertErrorIndex(() -> Json.parseString("{1:\"a\"}"), 1);
+  }
 
 }
