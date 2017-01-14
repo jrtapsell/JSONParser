@@ -22,4 +22,9 @@ public class JsonStringTest extends JsonTestBase {
   public void testUnendedString() throws LocatedJsonException {
     assertErrorIndex(() -> Json.parseString("\""), 0);
   }
+  @Test
+  public void testNestedString() throws LocatedJsonException {
+    assertOutput("\"a \\\"b\\\" \"", new Partition(0, 10, ContentType.STRING));
+  }
+
 }

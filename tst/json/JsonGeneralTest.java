@@ -34,4 +34,9 @@ public class JsonGeneralTest extends JsonTestBase {
   private String getText(final String first) throws IOException {
     return String.join(System.lineSeparator(), Files.readAllLines(Paths.get(first)));
   }
+
+  @Test
+  public void testBadTail() throws LocatedJsonException {
+    assertErrorIndex(() -> Json.parseString("\"a\"z"), 3);
+  }
 }
