@@ -14,11 +14,6 @@ import org.testng.annotations.Test;
 public class JSONGeneralTest extends JSONTestBase {
 
   @Test
-  public void fail() {
-    Assert.fail("Build failed");
-  }
-
-  @Test
   public void testNotJSON() {
     assertErrorIndex(() -> JSON.parseString("NOT JSON"), 0);
   }
