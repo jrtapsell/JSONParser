@@ -5,13 +5,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import json.parser.JSON;
 import json.utils.LocatedJSONException;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
  * @author James Tapsell
  */
 public class JSONGeneralTest extends JSONTestBase {
-
 
   @Test
   public void testNotJSON() {
