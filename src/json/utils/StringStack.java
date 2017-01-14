@@ -63,7 +63,7 @@ public class StringStack {
     return available() >= length && substring.equals(text);
   }
 
-  private int available() {
+  public int available() {
     return text.length() - index;
   }
 
