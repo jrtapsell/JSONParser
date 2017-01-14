@@ -6,11 +6,12 @@ repositories {
 }
 dependencies {
     compile 'org.jetbrains:annotations:15.0'
+    checkstyle "com.puppycrawl.tools:checkstyle:7.4",
     testCompile 'org.testng:testng:6.9.13.6'
 }
 
 checkstyle {
-    toolVersion = "7.3"
+    toolVersion = "7.4"
     configFile = new File(rootDir, "checkstyle.xml")
     ignoreFailures = false
     showViolations = true
