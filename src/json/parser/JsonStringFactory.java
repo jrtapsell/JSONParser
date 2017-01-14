@@ -30,12 +30,11 @@ public final class JsonStringFactory implements JsonElementFactory {
       final @NotNull JsonTreeElement tree) throws LocatedJsonException {
     final int startIndex = stack.getIndex();
     stack.pop();
-    boolean escaped = false;
     while (stack.isAvailable()) {
       final char c = stack.pop();
       if (c == '\\') {
-        escaped = !escaped;
-      } else if (c == '"' && !escaped) {
+        char escaped = stack.pop();
+      } else if (c == '"') {
         partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.STRING));
         return;
       }
