@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jsonparser" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.swc"/>
+    <include name="*.war"/>
+    <include name="*.ane"/>
+    <include name="*.zip"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/icedtea-sound.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfxswt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="lib/tools.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Global Libraries -->
+  
+  
+  <!-- Application Server Libraries -->
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module JSONParser -->
+  
+  <dirname property="module.jsonparser.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.jsonparser" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.jsonparser" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.jsonparser" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.jsonparser" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="jsonparser.output.dir" value="${module.jsonparser.basedir}/out/production/JSONParser"/>
+  <property name="jsonparser.testoutput.dir" value="${module.jsonparser.basedir}/out/test/JSONParser"/>
+  
+  <path id="jsonparser.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="jsonparser.module.production.classpath">
+    <path refid="${module.jdk.classpath.jsonparser}"/>
+    <pathelement location="${idea.home}/redist/annotations-java8.jar"/>
+  </path>
+  
+  <path id="jsonparser.runtime.production.module.classpath">
+    <pathelement location="${jsonparser.output.dir}"/>
+    <pathelement location="${idea.home}/redist/annotations-java8.jar"/>
+  </path>
+  
+  <path id="jsonparser.module.classpath">
+    <path refid="${module.jdk.classpath.jsonparser}"/>
+    <pathelement location="${jsonparser.output.dir}"/>
+    <pathelement location="${idea.home}/plugins/testng/lib/jcommander.jar"/>
+    <pathelement location="${idea.home}/plugins/testng/lib/testng.jar"/>
+    <pathelement location="${idea.home}/redist/annotations-java8.jar"/>
+  </path>
+  
+  <path id="jsonparser.runtime.module.classpath">
+    <pathelement location="${jsonparser.testoutput.dir}"/>
+    <pathelement location="${jsonparser.output.dir}"/>
+    <pathelement location="${idea.home}/plugins/testng/lib/jcommander.jar"/>
+    <pathelement location="${idea.home}/plugins/testng/lib/testng.jar"/>
+    <pathelement location="${idea.home}/redist/annotations-java8.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.jsonparser">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.jsonparser">
+    <patternset refid="excluded.from.module.jsonparser"/>
+  </patternset>
+  
+  <path id="jsonparser.module.sourcepath">
+    <dirset dir="${module.jsonparser.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="jsonparser.module.test.sourcepath">
+    <dirset dir="${module.jsonparser.basedir}">
+      <include name="tst"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.jsonparser" depends="compile.module.jsonparser.production,compile.module.jsonparser.tests" description="Compile module JSONParser"/>
+  
+  <target name="compile.module.jsonparser.production" description="Compile module JSONParser; production classes">
+    <mkdir dir="${jsonparser.output.dir}"/>
+    <javac destdir="${jsonparser.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jsonparser}/javac">
+      <compilerarg line="${compiler.args.jsonparser}"/>
+      <bootclasspath refid="jsonparser.module.bootclasspath"/>
+      <classpath refid="jsonparser.module.production.classpath"/>
+      <src refid="jsonparser.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jsonparser"/>
+    </javac>
+    
+    <copy todir="${jsonparser.output.dir}">
+      <fileset dir="${module.jsonparser.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.jsonparser.tests" depends="compile.module.jsonparser.production" description="compile module JSONParser; test classes" unless="skip.tests">
+    <mkdir dir="${jsonparser.testoutput.dir}"/>
+    <javac destdir="${jsonparser.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jsonparser}/javac">
+      <compilerarg line="${compiler.args.jsonparser}"/>
+      <bootclasspath refid="jsonparser.module.bootclasspath"/>
+      <classpath refid="jsonparser.module.classpath"/>
+      <src refid="jsonparser.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jsonparser"/>
+    </javac>
+    
+    <copy todir="${jsonparser.testoutput.dir}">
+      <fileset dir="${module.jsonparser.basedir}/tst">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.jsonparser" description="cleanup module">
+    <delete dir="${jsonparser.output.dir}"/>
+    <delete dir="${jsonparser.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.jsonparser" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.jsonparser" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
