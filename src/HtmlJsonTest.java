@@ -4,11 +4,13 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import json.parser.JSON;
+import json.parser.Json;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
 
 /**
+ * Tests rendering a Json file to HTML.
+ *
  * @author James Tapsell
  */
 final class HtmlJsonTest {
@@ -52,7 +54,7 @@ final class HtmlJsonTest {
 
   private static List<Partition> part(final String test) throws LocatedJSONException {
     final long n = System.nanoTime();
-    final List<Partition> partitions = JSON.parseString(test).getKey();
+    final List<Partition> partitions = Json.parseString(test).getKey();
     final long x = System.nanoTime() - n;
     System.err.printf("Parsing took %d.%dms%n", x / NS_IN_MS, x % NS_IN_MS);
     return partitions;

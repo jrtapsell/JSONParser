@@ -7,17 +7,17 @@
     </test>
     <test name="Simple types">
         <classes>
-            <class name="json.types.JSONArrayTest"/>
-            <class name="json.types.JSONBooleanTest"/>
-            <class name="json.types.JSONNullTest"/>
-            <class name="json.types.JSONNumberTest"/>
-            <class name="json.types.JSONObjectTest"/>
-            <class name="json.types.JSONStringTest"/>
+            <class name="json.types.JsonArrayTest"/>
+            <class name="json.types.JsonBooleanTest"/>
+            <class name="json.types.JsonNullTest"/>
+            <class name="json.types.JsonNumberTest"/>
+            <class name="json.types.JsonObjectTest"/>
+            <class name="json.types.JsonStringTest"/>
         </classes>
     </test>
     <test name="General">
         <classes>
-            <class name="json.JSONGeneralTest"/>
+            <class name="json.JsonGeneralTest"/>
         </classes>
     </test>
 </suite>

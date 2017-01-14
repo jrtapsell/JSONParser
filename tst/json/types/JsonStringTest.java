@@ -1,7 +1,7 @@
 package json.types;
 
-import json.JSONTestBase;
-import json.parser.JSON;
+import json.JsonTestBase;
+import json.parser.Json;
 import json.utils.ContentType;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 /**
  * @author James Tapsell
  */
-public class JSONStringTest extends JSONTestBase {
+public class JsonStringTest extends JsonTestBase {
   @Test
   public void testSimpleString() throws LocatedJSONException {
     assertOutput("\"Hello\"", new Partition(0, 7, ContentType.STRING));
@@ -18,6 +18,6 @@ public class JSONStringTest extends JSONTestBase {
 
   @Test
   public void testUnendedString() throws LocatedJSONException {
-    assertErrorIndex(() -> JSON.parseString("\""), 0);
+    assertErrorIndex(() -> Json.parseString("\""), 0);
   }
 }

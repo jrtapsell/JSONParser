@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import json.parser.JSON;
+import json.parser.Json;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
 import org.testng.Assert;
@@ -12,7 +12,7 @@ import org.testng.Assert;
 /**
  * @author James Tapsell
  */
-public class JSONTestBase {
+public class JsonTestBase {
   protected void assertErrorIndex(final ThrowingRunnable<LocatedJSONException> o, final int expected) {
     try {
       o.run();
@@ -34,7 +34,7 @@ public class JSONTestBase {
   }
 
   protected void assertOutput(final String input, final Partition... output) throws LocatedJSONException {
-    final List<Partition> partitions = JSON.parseString(input).getKey();
+    final List<Partition> partitions = Json.parseString(input).getKey();
     final List<Partition> expected = Arrays.asList(output);
     if (!expected.equals(partitions)) {
       System.out.println("Expected:");

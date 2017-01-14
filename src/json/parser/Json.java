@@ -14,9 +14,11 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The Json Parser.
+ *
  * @author James Tapsell
  */
-public final class JSON {
+public final class Json {
 
   private static final JSONElementFactory[] FACTORIES = {
       JSONKeywordFactory.getInstance(),
@@ -25,7 +27,7 @@ public final class JSON {
       JSONObjectFactory.getInstance(),
       JSONArrayFactory.getInstance()
   };
-  private JSON() {}
+  private Json() {}
 
   @Contract("_ -> !null")
   public static Pair<List<Partition>, JSONTreeElement> parseString(final @NotNull String s) throws LocatedJSONException {
@@ -36,7 +38,7 @@ public final class JSON {
     parseAny(partitions, ss, root);
     consumeWhitespace(partitions,ss);
     if (ss.isAvailable()) {
-      throw new LocatedJSONException("Bad character after JSON", ss);
+      throw new LocatedJSONException("Bad character after Json", ss);
     }
     return new Pair<>(partitions, root);
   }

@@ -36,7 +36,7 @@ public final class JSONArrayFactory implements JSONElementFactory {
         return;
       }
       partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.ARRAY));
-      JSON.parseAny(partitions, stack, jte);
+      Json.parseAny(partitions, stack, jte);
       startIndex = stack.getIndex();
       stack.seekWhitespace();
       if (stack.peek() != ']' && stack.pop() != ',') {

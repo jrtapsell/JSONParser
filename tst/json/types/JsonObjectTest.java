@@ -1,7 +1,7 @@
 package json.types;
 
-import json.JSONTestBase;
-import json.parser.JSON;
+import json.JsonTestBase;
+import json.parser.Json;
 import json.utils.ContentType;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 /**
  * @author James Tapsell
  */
-public class JSONObjectTest extends JSONTestBase {
+public class JsonObjectTest extends JsonTestBase {
 
   @Test
   public void testSimpleObject() throws LocatedJSONException {
@@ -25,16 +25,16 @@ public class JSONObjectTest extends JSONTestBase {
 
   @Test
   public void testUnendedObject() throws LocatedJSONException {
-    assertErrorIndex(() -> JSON.parseString("{"), 0);
+    assertErrorIndex(() -> Json.parseString("{"), 0);
   }
 
   @Test
   public void testMalformedObject() throws LocatedJSONException {
-    assertErrorIndex(() -> JSON.parseString("{\"a\" \"b\"}"), 5);
+    assertErrorIndex(() -> Json.parseString("{\"a\" \"b\"}"), 5);
   }
   @Test (expectedExceptions = LocatedJSONException.class)
   public void testMalformedObject2() throws LocatedJSONException {
-    JSON.parseString("{\"a\":\"b\" \"a\":\"b\"}");
+    Json.parseString("{\"a\":\"b\" \"a\":\"b\"}");
   }
 
   @Test

@@ -1,6 +1,6 @@
 package json.types;
 
-import json.JSONTestBase;
+import json.JsonTestBase;
 import json.utils.ContentType;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 /**
  * @author James Tapsell
  */
-public class JSONBooleanTest extends JSONTestBase {
+public class JsonBooleanTest extends JsonTestBase {
   @DataProvider
   public static Object[][] goodBooleans() {
     return new Object[][]{

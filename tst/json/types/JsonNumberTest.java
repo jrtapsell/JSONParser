@@ -1,7 +1,7 @@
 package json.types;
 
-import json.JSONTestBase;
-import json.parser.JSON;
+import json.JsonTestBase;
+import json.parser.Json;
 import json.utils.ContentType;
 import json.utils.LocatedJSONException;
 import json.utils.Partition;
@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 /**
  * @author James Tapsell
  */
-public class JSONNumberTest extends JSONTestBase {
+public class JsonNumberTest extends JsonTestBase {
 
   private static final Object[][] BAD_FLOATS = {
       {"-1.1.", 4},
@@ -61,6 +61,6 @@ public class JSONNumberTest extends JSONTestBase {
 
   @Test (dataProvider = "badFloats")
   public void testBadFloats(final String value, final int failOffset) throws LocatedJSONException {
-    assertErrorIndex(() -> JSON.parseString(value), failOffset);
+    assertErrorIndex(() -> Json.parseString(value), failOffset);
   }
 }

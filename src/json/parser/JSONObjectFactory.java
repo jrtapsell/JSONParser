@@ -48,7 +48,7 @@ public final class JSONObjectFactory implements JSONElementFactory {
       }
       stack.seekWhitespace();
       partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
-      JSON.parseAny(partitions, stack, jte);
+      Json.parseAny(partitions, stack, jte);
       startIndex = stack.getIndex();
       stack.seekWhitespace();
       if (stack.peek() != '}' && stack.pop() != ',') {

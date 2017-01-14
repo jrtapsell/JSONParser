@@ -7,6 +7,12 @@ dependencies {
     compile 'org.jetbrains:annotations:15.0'
     testCompile 'org.testng:testng:6.9.13.6'
 }
+apply plugin: 'checkstyle'
+
+checkstyle {
+    toolVersion = "7.4"
+    configFile = new File(rootDir, "checkstyle.xml")
+}
 
 sourceSets {
     main {
