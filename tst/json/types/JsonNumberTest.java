@@ -3,12 +3,14 @@ package json.types;
 import json.JsonTestBase;
 import json.parser.Json;
 import json.utils.ContentType;
-import json.utils.LocatedJSONException;
+import json.utils.LocatedJsonException;
 import json.utils.Partition;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
+ * Tests JSON Numbers.
+ *
  * @author James Tapsell
  */
 public class JsonNumberTest extends JsonTestBase {
@@ -49,18 +51,18 @@ public class JsonNumberTest extends JsonTestBase {
   }
 
   @Test (dataProvider = "goodInts")
-  public void testSimpleInteger(final int value) throws LocatedJSONException {
+  public void testSimpleInteger(final int value) throws LocatedJsonException {
     final String input = String.valueOf(value);
     assertOutput(input, new Partition(0, input.length(), ContentType.NUMBER));
   }
 
   @Test(dataProvider = "goodFloats")
-  public void testSimpleFloats(final String in) throws LocatedJSONException {
+  public void testSimpleFloats(final String in) throws LocatedJsonException {
     assertOutput(in, new Partition(0, in.length(), ContentType.NUMBER));
   }
 
   @Test (dataProvider = "badFloats")
-  public void testBadFloats(final String value, final int failOffset) throws LocatedJSONException {
+  public void testBadFloats(final String value, final int failOffset) throws LocatedJsonException {
     assertErrorIndex(() -> Json.parseString(value), failOffset);
   }
 }

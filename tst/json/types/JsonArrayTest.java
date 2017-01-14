@@ -3,27 +3,29 @@ package json.types;
 import json.JsonTestBase;
 import json.parser.Json;
 import json.utils.ContentType;
-import json.utils.LocatedJSONException;
+import json.utils.LocatedJsonException;
 import json.utils.Partition;
 import org.testng.annotations.Test;
 
 /**
+ * Tests JSON Arrays.
+ *
  * @author James Tapsell
  */
 public class JsonArrayTest extends JsonTestBase {
 
   @Test
-  public void testUnendedArray() throws LocatedJSONException {
+  public void testUnendedArray() throws LocatedJsonException {
     assertErrorIndex(() -> Json.parseString("["), 0);
   }
 
   @Test
-  public void testMalformedArray() throws LocatedJSONException {
+  public void testMalformedArray() throws LocatedJsonException {
     assertErrorIndex(() -> Json.parseString("[1 2]"), 3);
   }
 
   @Test
-  public void testSimpleArray() throws LocatedJSONException {
+  public void testSimpleArray() throws LocatedJsonException {
     assertOutput(
         "[1,2]",
         new Partition(0, 1, ContentType.ARRAY),
@@ -34,7 +36,7 @@ public class JsonArrayTest extends JsonTestBase {
   }
 
   @Test
-  public void testSpacedArray() throws LocatedJSONException {
+  public void testSpacedArray() throws LocatedJsonException {
     assertOutput(
         " [ 1 , 2 ] ",
         new Partition(0, 1, ContentType.SPACE),
@@ -47,7 +49,7 @@ public class JsonArrayTest extends JsonTestBase {
   }
 
   @Test
-  public void testEmptyArray() throws LocatedJSONException {
+  public void testEmptyArray() throws LocatedJsonException {
     assertOutput("[]",
         new Partition(0, 2, ContentType.ARRAY));
   }

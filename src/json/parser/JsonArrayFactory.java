@@ -2,28 +2,34 @@ package json.parser;
 
 import java.util.List;
 import json.utils.ContentType;
-import json.utils.JSONElementFactory;
-import json.utils.JSONTreeElement;
-import json.utils.LocatedJSONException;
+import json.utils.JsonElementFactory;
+import json.utils.JsonTreeElement;
+import json.utils.LocatedJsonException;
 import json.utils.Partition;
 import json.utils.StringStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Factory for JSONElements of type Array.
+ *
  * @author James Tapsell
  */
-public final class JsonArrayFactory implements JSONElementFactory {
+public final class JsonArrayFactory implements JsonElementFactory {
   private static final JsonArrayFactory INSTANCE = new JsonArrayFactory();
 
-  static JSONElementFactory getInstance() {
+  static JsonElementFactory getInstance() {
     return INSTANCE;
   }
+
   private JsonArrayFactory() {}
 
   @Override
-  public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack, final @NotNull JSONTreeElement parent) throws LocatedJSONException {
+  public void read(
+      final @NotNull List<Partition> partitions,
+      final @NotNull StringStack stack,
+      final @NotNull JsonTreeElement parent) throws LocatedJsonException {
     int startIndex = stack.getIndex();
-    final JSONTreeElement jte = new JSONTreeElement(ContentType.ARRAY, startIndex);
+    final JsonTreeElement jte = new JsonTreeElement(ContentType.ARRAY, startIndex);
     parent.addChild(jte);
     final int origin = startIndex;
     stack.pop();
@@ -40,10 +46,10 @@ public final class JsonArrayFactory implements JSONElementFactory {
       startIndex = stack.getIndex();
       stack.seekWhitespace();
       if (stack.peek() != ']' && stack.pop() != ',') {
-        throw new LocatedJSONException("Missing comma", stack, stack.getIndex() - 1);
+        throw new LocatedJsonException("Missing comma", stack, stack.getIndex() - 1);
       }
     }
-    throw new LocatedJSONException("Unterminated Array", stack, origin);
+    throw new LocatedJsonException("Unterminated Array", stack, origin);
   }
 
   @Override

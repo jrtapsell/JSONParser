@@ -3,17 +3,19 @@ package json.types;
 import json.JsonTestBase;
 import json.parser.Json;
 import json.utils.ContentType;
-import json.utils.LocatedJSONException;
+import json.utils.LocatedJsonException;
 import json.utils.Partition;
 import org.testng.annotations.Test;
 
 /**
+ * Tests JSON Objects.
+ *
  * @author James Tapsell
  */
 public class JsonObjectTest extends JsonTestBase {
 
   @Test
-  public void testSimpleObject() throws LocatedJSONException {
+  public void testSimpleObject() throws LocatedJsonException {
     assertOutput(
         "{\"a\":\"b\"}",
         new Partition(0, 1, ContentType.OBJECT),
@@ -24,27 +26,28 @@ public class JsonObjectTest extends JsonTestBase {
   }
 
   @Test
-  public void testUnendedObject() throws LocatedJSONException {
+  public void testUnendedObject() throws LocatedJsonException {
     assertErrorIndex(() -> Json.parseString("{"), 0);
   }
 
   @Test
-  public void testMalformedObject() throws LocatedJSONException {
+  public void testMalformedObject() throws LocatedJsonException {
     assertErrorIndex(() -> Json.parseString("{\"a\" \"b\"}"), 5);
   }
-  @Test (expectedExceptions = LocatedJSONException.class)
-  public void testMalformedObject2() throws LocatedJSONException {
+
+  @Test (expectedExceptions = LocatedJsonException.class)
+  public void testMalformedObject2() throws LocatedJsonException {
     Json.parseString("{\"a\":\"b\" \"a\":\"b\"}");
   }
 
   @Test
-  public void testEmptyObject() throws LocatedJSONException {
+  public void testEmptyObject() throws LocatedJsonException {
     assertOutput("{}",
         new Partition(0, 2, ContentType.OBJECT));
   }
 
   @Test
-  public void testSimpleSpacedObject() throws LocatedJSONException {
+  public void testSimpleSpacedObject() throws LocatedJsonException {
     assertOutput(
         " { \"a\" : \"b\" } ",
         new Partition(0, 1, ContentType.SPACE),

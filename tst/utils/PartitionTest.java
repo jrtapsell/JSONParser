@@ -6,6 +6,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
+ * Test JSON partitions.
+ *
  * @author James Tapsell
  */
 public class PartitionTest {

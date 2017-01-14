@@ -1,30 +1,39 @@
 package json.utils;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * A string with a stacklike interface.
+ *
  * @author James Tapsell
  */
 public class StringStack {
-  private final String s;
+  private final String text;
   private int index;
   private final List<Integer> lines;
   private static final String LINE_SEPARATOR = System.lineSeparator();
 
-  public StringStack(final @NotNull String s) {
-    this(s, 0);
+  public StringStack(final @NotNull String text) {
+    this(text, 0);
   }
 
-  private StringStack(final @NotNull String s, final int i) {
-    this.s = s;
+  private StringStack(final @NotNull String text, final int i) {
+    this.text = text;
     index = i;
-    lines = calculateLines(s);
+    lines = calculateLines(text);
   }
 
+  /**
+   * Pops a character off the stack.
+   *
+   * @return
+   *  The character that was popped.
+   */
   public char pop() {
-    final char result = s.charAt(index);
+    final char result = text.charAt(index);
     index++;
     return result;
   }
@@ -34,20 +43,28 @@ public class StringStack {
   }
 
   public char peek() {
-    return s.charAt(index);
+    return text.charAt(index);
   }
 
+  /**
+   * Checks if the string is the next characters in the stack.
+   *
+   * @param text
+   *  The text to check against
+   * @return
+   *  true iff the next part of the string is equal to text.
+   */
   public boolean isNext(final @NotNull CharSequence text) {
     final int length = text.length();
-    if (length + index > s.length()) {
+    if (length + index > this.text.length()) {
       return false;
     }
-    final String substring = s.substring(index, length + index);
+    final String substring = this.text.substring(index, length + index);
     return available() >= length && substring.equals(text);
   }
 
   private int available() {
-    return s.length() - index;
+    return text.length() - index;
   }
 
   private boolean isComplete() {
@@ -67,13 +84,16 @@ public class StringStack {
   }
 
   public String getRaw() {
-    return s;
+    return text;
   }
 
   public void unpop() {
     index--;
   }
 
+  /**
+   * Pops all the whitespace characters until the next non-whitespace character.
+   */
   public void seekWhitespace() {
     while (isAvailable() && Character.isWhitespace(peek())) {
       pop();
@@ -98,7 +118,7 @@ public class StringStack {
   }
 
   private int getLineIndex(final int position) {
-    if (position < 0 || position >= s.length()) {
+    if (position < 0 || position >= text.length()) {
       throw new AssertionError("Bad Location");
     }
     for (int i = 0; i < lines.size() - 1; i++) {
@@ -110,19 +130,27 @@ public class StringStack {
     return lines.size() - 1;
   }
 
+  /**
+   * Gets the text of the line including the given line number (0 indexed).
+   *
+   * @param position
+   *  The position to get for
+   * @return
+   *  The text of the line, with the ending newline stripped off
+   */
   public String getLine(final int position) {
     final int lineIndex = getLineIndex(position);
     final boolean last = lineIndex == (lines.size() - 1);
-    final int end = last ? s.length() : lines.get(lineIndex + 1);
+    final int end = last ? text.length() : lines.get(lineIndex + 1);
     final int start = lines.get(lineIndex);
 
-    final String substring = s.substring(start, end);
-    return substring.endsWith(LINE_SEPARATOR) ?
-        substring.substring(0, substring.length() - LINE_SEPARATOR.length()) :
-        substring;
+    final String substring = text.substring(start, end);
+    return substring.endsWith(LINE_SEPARATOR)
+        ? substring.substring(0, substring.length() - LINE_SEPARATOR.length())
+        : substring;
   }
 
   public String getText(int startIndex, int index) {
-    return s.substring(startIndex, index);
+    return text.substring(startIndex, index);
   }
 }

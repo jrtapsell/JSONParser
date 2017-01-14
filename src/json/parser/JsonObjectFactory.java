@@ -2,30 +2,36 @@ package json.parser;
 
 import java.util.List;
 import json.utils.ContentType;
-import json.utils.JSONElementFactory;
-import json.utils.JSONTreeElement;
-import json.utils.LocatedJSONException;
+import json.utils.JsonElementFactory;
+import json.utils.JsonTreeElement;
+import json.utils.LocatedJsonException;
 import json.utils.Partition;
 import json.utils.StringStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Factory for JSONElements of type Object.
+ *
  * @author James Tapsell
  */
-public final class JsonObjectFactory implements JSONElementFactory {
+public final class JsonObjectFactory implements JsonElementFactory {
 
   private static final JsonObjectFactory INSTANCE = new JsonObjectFactory();
   private static final JsonStringFactory STRING_FACTORY = JsonStringFactory.getInstance();
 
-  public static JSONElementFactory getInstance() {
+  public static JsonElementFactory getInstance() {
     return INSTANCE;
   }
+
   private JsonObjectFactory() {}
 
   @Override
-  public void read(final @NotNull List<Partition> partitions, final @NotNull StringStack stack, final @NotNull JSONTreeElement parent) throws LocatedJSONException {
+  public void read(
+      final @NotNull List<Partition> partitions,
+      final @NotNull StringStack stack,
+      final @NotNull JsonTreeElement parent) throws LocatedJsonException {
     int startIndex = stack.getIndex();
-    JSONTreeElement jte = new JSONTreeElement(ContentType.OBJECT, startIndex);
+    JsonTreeElement jte = new JsonTreeElement(ContentType.OBJECT, startIndex);
     final int origin = startIndex;
     stack.pop();
     while (stack.isAvailable()) {
@@ -38,13 +44,13 @@ public final class JsonObjectFactory implements JSONElementFactory {
       }
       partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
       if (stack.peek() != '"') {
-        throw new LocatedJSONException("Key must be a string", stack);
+        throw new LocatedJsonException("Key must be a string", stack);
       }
       STRING_FACTORY.read(partitions, stack, jte);
       startIndex = stack.getIndex();
       stack.seekWhitespace();
       if (stack.pop() != ':') {
-        throw new LocatedJSONException("Missing : ", stack, stack.getIndex() - 1);
+        throw new LocatedJsonException("Missing : ", stack, stack.getIndex() - 1);
       }
       stack.seekWhitespace();
       partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
@@ -52,10 +58,10 @@ public final class JsonObjectFactory implements JSONElementFactory {
       startIndex = stack.getIndex();
       stack.seekWhitespace();
       if (stack.peek() != '}' && stack.pop() != ',') {
-        throw new LocatedJSONException("Missing , ", stack);
+        throw new LocatedJsonException("Missing , ", stack);
       }
     }
-    throw new LocatedJSONException("Unterminated Object", stack, origin);
+    throw new LocatedJsonException("Unterminated Object", stack, origin);
   }
 
   @Override

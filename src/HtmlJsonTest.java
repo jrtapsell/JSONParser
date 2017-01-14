@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import json.parser.Json;
-import json.utils.LocatedJSONException;
+import json.utils.LocatedJsonException;
 import json.utils.Partition;
 
 /**
@@ -21,7 +21,7 @@ final class HtmlJsonTest {
   private HtmlJsonTest() {
   }
 
-  public static void main(final String... args) throws LocatedJSONException, IOException {
+  public static void main(final String... args) throws LocatedJsonException, IOException {
     final String test = String.join(LINE_SEPARATOR, Files.readAllLines(Paths.get("big.json")));
     final List<Partition> paa = part(test);
     try (PrintStream ps = new PrintStream(new FileOutputStream("out.html"))) {
@@ -52,7 +52,7 @@ final class HtmlJsonTest {
     }
   }
 
-  private static List<Partition> part(final String test) throws LocatedJSONException {
+  private static List<Partition> part(final String test) throws LocatedJsonException {
     final long n = System.nanoTime();
     final List<Partition> partitions = Json.parseString(test).getKey();
     final long x = System.nanoTime() - n;

@@ -3,18 +3,31 @@ package json.utils;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
+ * An element in a parsed JSON string, with tree structure intact.
+ *
  * @author James Tapsell
  */
-public class JSONTreeElement {
+public class JsonTreeElement {
   private final ContentType type;
-  private final List<JSONTreeElement> children;
+  private final List<JsonTreeElement> children;
   private final int startIndex;
   private int endIndex;
   private String text;
 
-  public JSONTreeElement(ContentType type, int startIndex) {
+  /**
+   * Constructs a new tree element.
+   *
+   * @param type
+   *  The type of the new element
+   * @param startIndex
+   *  The start index of the tree element
+   */
+  public JsonTreeElement(
+      final @Nullable ContentType type,
+      final int startIndex) {
     this.type = type;
     this.startIndex = startIndex;
     children = new ArrayList<>();
@@ -24,7 +37,7 @@ public class JSONTreeElement {
     return type;
   }
 
-  public List<JSONTreeElement> getChildren() {
+  public List<JsonTreeElement> getChildren() {
     return children;
   }
 
@@ -40,7 +53,7 @@ public class JSONTreeElement {
     return text;
   }
 
-  public void addChild(@NotNull JSONTreeElement element) {
+  public void addChild(@NotNull JsonTreeElement element) {
     children.add(element);
   }
 

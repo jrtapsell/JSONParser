@@ -3,23 +3,36 @@ package json.utils;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * An error in a JSON string, with the index that it occured.
+ *
  * @author James Tapsell
  */
-public class LocatedJSONException extends Exception {
+public class LocatedJsonException extends Exception {
   private final int position;
 
-  public LocatedJSONException(
-      final @NotNull String s,
+  public LocatedJsonException(
+      final @NotNull String text,
       final @NotNull StringStack stack) {
-    this(s, stack, stack.getIndex());
+    this(text, stack, stack.getIndex());
   }
-  public LocatedJSONException(
-      final @NotNull String s,
+
+  /**
+   * Creates a new exception.
+   *
+   * @param test
+   *  The exception message.
+   * @param stack
+   *  The stack that the error happened in.
+   * @param position
+   *  The position of the error.
+   */
+  public LocatedJsonException(
+      final @NotNull String test,
       final @NotNull StringStack stack,
       final int position) {
     super(String.format(
         "%s%s%s",
-        s,
+        test,
         System.lineSeparator(),
         getLineDisplay(stack, position)));
     final StringStack ss = stack;

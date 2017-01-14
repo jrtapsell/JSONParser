@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * An element in a JSON string, flattened.
+ *
  * @author James Tapsell
  */
 public class Partition {
@@ -25,11 +27,20 @@ public class Partition {
   private final String name;
   private final ContentType type;
 
-  public Partition(final int start, final int end, final @NotNull ContentType name) {
+  /**
+   * Creates a new partition.
+   * @param start
+   *  The start position (inclusive)
+   * @param end
+   *  The end position (exclusive)
+   * @param type
+   *  The type
+   */
+  public Partition(final int start, final int end, final @NotNull ContentType type) {
     this.start = start;
     this.end = end;
-    this.name = name.name();
-    type = name;
+    name = type.name();
+    this.type = type;
   }
 
   @Override
@@ -51,9 +62,9 @@ public class Partition {
       return false;
     }
     final Partition partition = (Partition) obj;
-    return (start == partition.getStart()) &&
-        (end == partition.getEnd()) &&
-        Objects.equals(name, partition.getName());
+    return (start == partition.getStart())
+        && (end == partition.getEnd())
+        && Objects.equals(name, partition.getName());
   }
 
   @Override

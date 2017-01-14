@@ -5,19 +5,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import json.parser.Json;
-import json.utils.LocatedJSONException;
+import json.utils.LocatedJsonException;
 import json.utils.Partition;
+import org.jetbrains.annotations.NotNull;
 import org.testng.Assert;
 
 /**
+ * Base for JSON test classes.
+ *
  * @author James Tapsell
  */
 public class JsonTestBase {
-  protected void assertErrorIndex(final ThrowingRunnable<LocatedJSONException> o, final int expected) {
+  protected void assertErrorIndex(
+      final @NotNull ThrowingRunnable<LocatedJsonException> o,
+      final int expected) {
     try {
       o.run();
       Assert.fail("Test threw no exception, expected a located exception");
-    } catch (final LocatedJSONException ex) {
+    } catch (final LocatedJsonException ex) {
       final int actual = ex.getPosition();
       if (actual == expected) {
         return;
@@ -33,7 +38,9 @@ public class JsonTestBase {
     }
   }
 
-  protected void assertOutput(final String input, final Partition... output) throws LocatedJSONException {
+  protected void assertOutput(
+      final @NotNull String input,
+      final @NotNull Partition... output) throws LocatedJsonException {
     final List<Partition> partitions = Json.parseString(input).getKey();
     final List<Partition> expected = Arrays.asList(output);
     if (!expected.equals(partitions)) {
