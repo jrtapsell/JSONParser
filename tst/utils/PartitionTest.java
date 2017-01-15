@@ -11,54 +11,53 @@ import org.testng.annotations.Test;
  * @author James Tapsell
  */
 public class PartitionTest {
-  private static final ContentType TYPE1 = ContentType.OBJECT;
-  private static final int END1 = 12;
-  private static final int START1 = 0;
-  private static final Partition TEST1 = new Partition(START1, END1, TYPE1);
-
-
-  private static final ContentType TYPE2 = ContentType.ARRAY;
-  private static final int END2 = 6;
-  private static final int START2 = 5;
-  private static final Partition TEST2 = new Partition(START2, END2, TYPE2);
+  private static final Partition TEST1A = new Partition(0, 12, ContentType.OBJECT);
+  private static final Partition TEST1B = new Partition(0, 12, ContentType.OBJECT);
+  private static final Partition TEST2A = new Partition(5, 6, ContentType.ARRAY);
+  private static final Partition TEST2B = new Partition(5, 8, ContentType.ARRAY);
+  private static final Partition TEST2C = new Partition(5, 6, ContentType.OBJECT);
 
   @Test
   public void testStart() {
-    Assert.assertEquals(TEST1.getStart(), START1, "Bad start");
-    Assert.assertEquals(TEST2.getStart(), START2, "Bad start");
+    Assert.assertEquals(TEST1A.getStart(), 0, "Bad start");
+    Assert.assertEquals(TEST2A.getStart(), 5, "Bad start");
   }
 
   @Test
   public void testEnd() {
-    Assert.assertEquals(TEST1.getEnd(), END1, "Bad end");
-    Assert.assertEquals(TEST2.getEnd(), END2, "Bad end");
+    Assert.assertEquals(TEST1A.getEnd(), 12, "Bad end");
+    Assert.assertEquals(TEST2A.getEnd(), 6, "Bad end");
   }
 
   @Test
   public void testType() {
-    Assert.assertEquals(TEST1.getType(), TYPE1, "Bad type");
-    Assert.assertEquals(TEST2.getType(), TYPE2, "Bad type");
+    Assert.assertEquals(TEST1A.getType(), ContentType.OBJECT, "Bad type");
+    Assert.assertEquals(TEST2A.getType(), ContentType.ARRAY, "Bad type");
   }
 
   @Test
   public void testName() {
-    Assert.assertEquals(TEST1.getName(), TYPE1.name(), "Bad name");
-    Assert.assertEquals(TEST2.getName(), TYPE2.name(), "Bad name");
+    Assert.assertEquals(TEST1A.getName(), ContentType.OBJECT.name(), "Bad name");
+    Assert.assertEquals(TEST2A.getName(), ContentType.ARRAY.name(), "Bad name");
   }
 
   @Test
   public void testEquals() {
-    Assert.assertNotEquals(TEST1, TEST2, "Dissimilar partitions are equal");
-    Assert.assertNotEquals("NULL", TEST1, "Partition equal to String");
-    Assert.assertNotEquals(null, TEST1, "Partition equal to null");
-    Assert.assertEquals(TEST1, TEST1, "Partition not equal to itself");
+    Assert.assertNotEquals(TEST1A, TEST2A, "Dissimilar partitions are equal");
+    Assert.assertNotEquals("NULL", TEST1A, "Partition equal to String");
+    Assert.assertNotEquals(null, TEST1A, "Partition equal to null");
+    Assert.assertEquals(TEST1A, TEST1A, "Partition not equal to itself");
+    Assert.assertEquals(TEST1A, TEST1B);
+    Assert.assertNotEquals(TEST2A, TEST2B);
   }
 
   @Test
   public void testHashCode() {
     Assert.assertNotEquals(
-        TEST1.hashCode(),
-        TEST2.hashCode(),
+        TEST1A.hashCode(),
+        TEST2A.hashCode(),
         "Test partitions have the same hashcode");
+    Assert.assertEquals(TEST1A.hashCode(), TEST1B.hashCode());
+    Assert.assertNotEquals(TEST2A, TEST2C);
   }
 }

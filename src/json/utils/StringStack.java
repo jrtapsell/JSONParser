@@ -60,7 +60,7 @@ public class StringStack {
       return false;
     }
     final String substring = this.text.substring(index, length + index);
-    return available() >= length && substring.equals(text);
+    return substring.equals(text);
   }
 
   public int available() {
