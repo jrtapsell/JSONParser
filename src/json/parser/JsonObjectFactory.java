@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author James Tapsell
  */
-public final class JsonObjectFactory implements JsonElementFactory {
+public final class JsonObjectFactory extends JsonContainerFactory {
 
   private static final JsonObjectFactory INSTANCE = new JsonObjectFactory();
   private static final JsonStringFactory STRING_FACTORY = JsonStringFactory.getInstance();
@@ -27,54 +27,43 @@ public final class JsonObjectFactory implements JsonElementFactory {
   private JsonObjectFactory() {}
 
   @Override
-  public void read(
-      final @NotNull List<Partition> partitions,
-      final @NotNull StringStack stack,
-      final @NotNull JsonTreeElement parent) throws LocatedJsonException {
-    int startIndex = stack.getIndex();
-    JsonTreeElement jte = new JsonTreeElement(ContentType.OBJECT, startIndex);
-    final int origin = startIndex;
-    stack.pop();
-    while (stack.isAvailable()) {
-      stack.seekWhitespace();
-      if (stack.peek() == '}') {
-        finalise(partitions, stack, startIndex, jte);
-        return;
-      }
-      partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
-      if (stack.peek() != '"') {
-        throw new LocatedJsonException("Key must be a string", stack);
-      }
-      STRING_FACTORY.read(partitions, stack, jte);
-      startIndex = stack.getIndex();
-      stack.seekWhitespace();
-      if (stack.pop() != ':') {
-        throw new LocatedJsonException("Missing : ", stack, stack.getIndex() - 1);
-      }
-      stack.seekWhitespace();
-      partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
-      Json.parseAny(partitions, stack, jte);
-      startIndex = stack.getIndex();
-      stack.seekWhitespace();
-      if (stack.peek() != '}' && stack.pop() != ',') {
-        throw new LocatedJsonException("Missing , ", stack);
-      }
-    }
-    throw new LocatedJsonException("Unterminated Object", stack, origin);
-  }
-
-  private void finalise(
-      final @NotNull Collection<Partition> partitions,
-      final @NotNull StringStack stack,
-      final int startIndex,
-      final JsonTreeElement jte) {
-    stack.pop();
-    partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
-    jte.finalise(stack.getIndex(), stack.getText(jte.getStartIndex(), stack.getIndex()));
+  public char getStart() {
+    return '{';
   }
 
   @Override
-  public boolean isNext(final @NotNull StringStack stack) {
-    return stack.peek() == '{';
+  public char getEnd() {
+    return '}';
+  }
+
+
+  @Override
+  public @NotNull String getName() {
+    return "Object";
+  }
+
+  @Override
+  public void readRow(
+      final @NotNull List<Partition> partitions,
+      final @NotNull StringStack stack,
+      final @NotNull JsonTreeElement jte) throws LocatedJsonException {
+    int startIndex;
+    if (stack.peek() != '"') {
+      throw new LocatedJsonException("Key must be a string", stack);
+    }
+    JsonStringFactory.getInstance().read(partitions, stack, jte);
+    startIndex = stack.getIndex();
+    stack.seekWhitespace();
+    if (stack.pop() != ':') {
+      throw new LocatedJsonException("Missing : ", stack, stack.getIndex() - 1);
+    }
+    stack.seekWhitespace();
+    partitions.add(new Partition(startIndex, stack.getIndex(), getType()));
+    Json.parseAny(partitions, stack, jte);
+  }
+
+  @Override
+  public @NotNull ContentType getType() {
+    return ContentType.OBJECT;
   }
 }

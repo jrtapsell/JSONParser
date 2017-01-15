@@ -12,6 +12,14 @@ import org.testng.annotations.Test;
  */
 public class StringStackTest {
 
+  @Test
+  public void testToString() {
+    final String testString = "abc";
+    final StringStack stringStack = new StringStack(testString);
+    final String toString = stringStack.toString();
+    Assert.assertTrue(toString.contains(testString));
+  }
+
   /**
    * Provides locations to test {@link StringStack#getLine(int)}.
    *

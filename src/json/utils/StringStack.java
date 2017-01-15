@@ -150,7 +150,9 @@ public class StringStack {
         : substring;
   }
 
-  public String getText(int startIndex, int index) {
+  public String getText(
+      final int startIndex,
+      final int index) {
     return text.substring(startIndex, index);
   }
 
@@ -168,5 +170,10 @@ public class StringStack {
       escape.append(pop());
     }
     return escape.toString();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("StringStack{text='%s', index=%d}", text, index);
   }
 }
