@@ -153,4 +153,20 @@ public class StringStack {
   public String getText(int startIndex, int index) {
     return text.substring(startIndex, index);
   }
+
+  /**
+   * Gets the next n characters from the string.
+   *
+   * @param length
+   *  The length to get
+   * @return
+   *  The characters
+   */
+  public @NotNull String getNext(final int length) {
+    final StringBuilder escape = new StringBuilder();
+    for (int i = 0; i < length; i++) {
+      escape.append(pop());
+    }
+    return escape.toString();
+  }
 }

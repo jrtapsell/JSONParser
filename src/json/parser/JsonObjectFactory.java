@@ -1,5 +1,6 @@
 package json.parser;
 
+import java.util.Collection;
 import java.util.List;
 import json.utils.ContentType;
 import json.utils.JsonElementFactory;
@@ -37,9 +38,7 @@ public final class JsonObjectFactory implements JsonElementFactory {
     while (stack.isAvailable()) {
       stack.seekWhitespace();
       if (stack.peek() == '}') {
-        stack.pop();
-        partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
-        jte.finalise(stack.getIndex(), stack.getText(jte.getStartIndex(), stack.getIndex()));
+        finalise(partitions, stack, startIndex, jte);
         return;
       }
       partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
@@ -62,6 +61,16 @@ public final class JsonObjectFactory implements JsonElementFactory {
       }
     }
     throw new LocatedJsonException("Unterminated Object", stack, origin);
+  }
+
+  private void finalise(
+      final @NotNull Collection<Partition> partitions,
+      final @NotNull StringStack stack,
+      final int startIndex,
+      final JsonTreeElement jte) {
+    stack.pop();
+    partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
+    jte.finalise(stack.getIndex(), stack.getText(jte.getStartIndex(), stack.getIndex()));
   }
 
   @Override
