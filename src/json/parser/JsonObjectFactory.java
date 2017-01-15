@@ -26,16 +26,6 @@ public final class JsonObjectFactory extends JsonContainerFactory {
 
   private JsonObjectFactory() {}
 
-  private void finalise(
-      final @NotNull Collection<Partition> partitions,
-      final @NotNull StringStack stack,
-      final int startIndex,
-      final JsonTreeElement jte) {
-    stack.pop();
-    partitions.add(new Partition(startIndex, stack.getIndex(), ContentType.OBJECT));
-    jte.finalise(stack.getIndex(), stack.getText(jte.getStartIndex(), stack.getIndex()));
-  }
-
   @Override
   public char getStart() {
     return '{';
@@ -45,6 +35,7 @@ public final class JsonObjectFactory extends JsonContainerFactory {
   public char getEnd() {
     return '}';
   }
+
 
   @Override
   public @NotNull String getName() {
