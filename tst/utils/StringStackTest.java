@@ -37,6 +37,13 @@ public class StringStackTest {
         "seekWhitespace seeked through non whitespace ");
   }
 
+  @Test
+  public void testRaw() {
+    final String example = "Example";
+    StringStack ss = new StringStack(example);
+    Assert.assertEquals(ss.getRaw(), example, "getRaw returned wrong value");
+  }
+
   @Test(expectedExceptions = AssertionError.class)
   public void testBadLocationHigh() {
     StringStack ss = new StringStack("a");

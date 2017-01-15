@@ -64,7 +64,7 @@ public class Partition {
     final Partition partition = (Partition) obj;
     return (start == partition.getStart())
         && (end == partition.getEnd())
-        && Objects.equals(name, partition.getName());
+        && Objects.equals(type, partition.getType());
   }
 
   @Override
