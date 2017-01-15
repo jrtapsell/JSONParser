@@ -45,12 +45,11 @@ public class Partition {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("json.utils.Partition{");
-    sb.append("start=").append(start);
-    sb.append(", end=").append(end);
-    sb.append(", name='").append(name).append('\'');
-    sb.append('}');
-    return sb.toString();
+    return String.format(
+        "Partition{start=%d, end=%d, name='%s'}",
+        start,
+        end,
+        name);
   }
 
   @Override
