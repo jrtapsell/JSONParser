@@ -33,7 +33,7 @@ public final class JsonStringFactory implements JsonElementFactory {
     stack.pop();
     while (stack.isAvailable()) {
       final int escapeStart = stack.getIndex();
-      final char c = stack.pop();
+      final char c = stack.pop()
       if (c == '\\') {
         validateEscape(stack, escapeStart);
       } else if (c == '"') {
